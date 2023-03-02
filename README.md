@@ -1,14 +1,16 @@
+# POSE Estimation Framework in VSLAM
+
 ## Project Description 
 
 To train our deep learning system, we need ground truth information. We require a VSLAM (Visual Simultaneous Localization and Mapping) framework that can accurately estimate POSEs in various environments. We want a clean, modular architecture VSLAM framework that allows us to use various algorithms as desired and conduct experiments to obtain accurate poses. Real-time computation is not a constraint.
 
 ## Roles
 
-매니저 m:이세라
-영상처리 m:안현석, s:장명근, 서영훈
-백엔드 m:형승호, s:안현석
-프론트 m:서영훈, s:장명근
-아키텍트 m:이세라, s:형승호, 서영훈
+- 매니저 m:이세라
+- 영상처리 m:안현석, s:장명근, 서영훈
+- 백엔드 m:형승호, s:안현석
+- 프론트 m:서영훈, s:장명근
+- 아키텍트 m:이세라, s:형승호, 서영훈
 
 ## TODO 
 
