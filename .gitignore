@@ -745,3 +745,4 @@ modules/image_module/*.cmake
 modules/image_module/*.a
 modules/image_module/Makefile
 
+*.cdp
