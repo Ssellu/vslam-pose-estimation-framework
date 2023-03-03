@@ -727,3 +727,21 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,visualstudio,c++,python,clion
+
+.vscode
+thirdparty/
+CMakeCache.txt
+*.cmake
+Makefile
+image_process
+CMakeFiles/
+
+modules/CMakeFiles/
+modules/*.cmake
+modules/Makefile
+
+modules/image_module/CMakeFiles/
+modules/image_module/*.cmake
+modules/image_module/*.a
+modules/image_module/Makefile
+
