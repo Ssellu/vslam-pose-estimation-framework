@@ -6,20 +6,6 @@
 #include <time.h>
 #include <string>
 
-class ImageProcessor{
-public:
-    ImageProcessor(const std::string feature_type);
-    ~ImageProcessor();
-    // void detectAndCompute(const cv::Mat& image_bgr);
-
-    void detectAndCompute(const cv::Mat& image_bgr, cv::Mat& descriptor);
-
-private:
-    std::string feature_type_;
-    bool draw;
-    cv::Ptr<cv::Feature2D> feature;
-};
-
 class Extractor{
 public:
     Extractor();
