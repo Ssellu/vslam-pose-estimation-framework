@@ -2,7 +2,9 @@
 
 ## Project Description 
 
-To train our deep learning system, we need ground truth information. We require a VSLAM (Visual Simultaneous Localization and Mapping) framework that can accurately estimate POSEs in various environments. We want a clean, modular architecture VSLAM framework that allows us to use various algorithms as desired and conduct experiments to obtain accurate poses. Real-time computation is not a constraint.
+To train our deep learning system, we need ground truth information. We require a VSLAM (Visual Simultaneous Localization and Mapping) framework that can accurately estimate POSEs in various environments. 
+
+We want a clean, modular architecture VSLAM framework that allows us to use various algorithms as desired and conduct experiments to obtain accurate poses. Real-time computation is not a constraint.
 
 ## Roles
 
@@ -12,25 +14,76 @@ To train our deep learning system, we need ground truth information. We require 
 - 프론트 m:서영훈, s:장명근
 - 아키텍트 m:이세라, s:형승호, 서영훈
 
-## TODO 
+## Specs
+
+- Ubuntu 18.04
+- OpenCV 4.6
+- Python 3.6.5
+- C++ 14
+
+## To-do
 
 - ROS를 쓸까말까? -> 나중에 정하기
-- branching 할까말까?
 - Docker -> Git Actions(CI)
   - ubuntu 18.04
-
 - GUI 유틸리티 추가(?)
 
-## Image Processing 
-
-- superglue - Matching
-- superpoint - Feature 
 
 
+## Detailed Methods 
+
+### Image Processing
+
+| Feature Type                |
+| --------------------------- |
+| SIFT                        |
+| ORB                         |
+| KAZE                        |
+| AKAZE                       |
+| BRISK                       |
+| FAST(TODO)                  |
+| superglue/superpoint (TODO) |
+| HardNet (TODO)              |
+
+
+
+
+| Image Processing            | Frontend | Backend | Loop Closure |
+| --------------------------- | -------- | ------- | -------- |
+|                  |          |         |              |
+|                  |          |         |              |
+|                  |          |         |              |
+|                  |          |         |              |
+|                  |          |         |              |
+|                  |          |         |              |
+|                  |          |         |              |
+|                  |          |         |          |
+
+- Keypoint Detection 
+  - Moravec, Harris, SIFT, FAST, oFAST(ORB), AKAZE, SuperPoint, KeyNet
+
+- Descriptor Extraction
+
+  - SIFT, BRIEF, rBRIEF(ORB), AKAZE, SuperPoint, HardNet
+
+  - Floating point descriptor, Binary descriptor
+
+
+- Correspondence Matching 
+
+  - FLANN-based Matcher (KDTree, Randomized Tree, ...)
+
+  - Brute-Force Matcher
+
+### ORB-SLAM2
+
+![ORB-SLAM2-PIPELINE](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*ZWXY3coSBymuqZnv9RZM4g.png)
+
+### ProSLAM
 
 | 2                                                            | 3                                                            | 4(토)                                                        | 5(일)                                                | 6                                                    | 7                                                            | 8 <중간점검>                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
-| 영상처리 : Feature, Descriptor <br />백엔드 : 자료조사.<br />프론트 : 자료조사. 요구사항, 이미지프로세싱에게 받아야 하는 정보, 백엔드에게 전달해야하는 정보<br />아키텍트 : 자료조사.<br /> | 영상처리 : Descriptor <br />백엔드<br />프론트<br />아키텍트<br /><br /><br />백/프 1시 미팅 | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />Docker Image 생성 | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />중간 점검용 DOC | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> |
+| 영상처리 : Feature, Descriptor <br />백엔드 : 자료조사.<br />프론트 : 자료조사. 요구사항, 이미지프로세싱에게 받아야 하는 정보, 백엔드에게 전달해야하는 정보<br />아키텍트 : 자료조사.<br /> | 영상처리 : Descriptor <br />백엔드/프론트 : ORB-SLAM2 조사 및 구현<br />아키텍트 : ORB-SLAM2 UML<br /><br /><br />백/프 1시 미팅<br />18시 강사님 미팅 | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />Docker Image 생성 | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />중간 점검용 DOC<br /><br />강사님 미팅 (1번 요청사항) | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> |
 | 9                                                            | 10                                                           | 11(토)                                                       | 12(일)                                               | 13                                                   | 14                                                           | 15                                                   |
 | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />         | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />         | 영상처리<br />백엔드<br />프론트<br />아키텍트<br />         | 영상처리<br />백엔드<br />프론트<br />아키텍트<br /> | 테스트<br />DOC                                      | 테스트<br />DOC                                              | 테스트<br />발표                                     |
 
