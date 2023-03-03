@@ -5,7 +5,7 @@ project(image_module LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(image_module src/extract_features.cpp)
+set(IMAGE_MODULE_SOURCE_FILES src/extract_features.cpp)
 
 add_library(image_module ${IMAGE_MODULE_SOURCE_FILES})
 
