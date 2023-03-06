@@ -80,6 +80,9 @@ We want a clean, modular architecture VSLAM framework that allows us to use vari
 ![ORB-SLAM2-PIPELINE](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*ZWXY3coSBymuqZnv9RZM4g.png)
 
 ### ProSLAM
+![PROSLAM](https://user-content.gitlab-static.net/c5cc03f792d716a40027d00c427f54b5f3cd26df/68747470733a2f2f64726976652e676f6f676c652e636f6d2f75633f6578706f72743d646f776e6c6f61642669643d315538534a75455476627459677147465649506666555077492d69696b53733473)
+
+### LSD-SLAM
 
 | 2                                                            | 3                                                            | 4(토)                                                        | 5(일)                                                | 6                                                    | 7                                                            | 8 <중간점검>                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
@@ -102,3 +105,11 @@ We want a clean, modular architecture VSLAM framework that allows us to use vari
 - 프레임당 연산 속도 개선 (+50점)
 - 실시간 시각화 가능 (+50점) - RVIZ
 - 안정성 확보 – CI/CD + 유닛테스트 검증 (+100점)
+
+## REFERENCES
+https://arxiv.org/abs/1610.06475
+https://arxiv.org/abs/1709.04377
+https://jakobengel.github.io/pdf/engel14eccv.pdf
+https://github.com/mateomd-dev/orb-slam2
+https://gitlab.com/srrg-software/srrg_proslam
+https://miro.medium.com
