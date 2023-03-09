@@ -23,16 +23,16 @@ jobs:
          echo ${{ github.head_ref }}
         
          cd dockerfiles
-         docker build --force-rm -f build.dockerfile -t "team3:base" --build-arg BRANCH=${{ github.head_ref }} . 
+         sudo docker build --force-rm -f build.dockerfile -t "team3:base" --build-arg BRANCH=${{ github.head_ref }} . 
          echo "=== Build finished==="
          
          sudo docker images
-          echo "=== Replace old Docker image with temporary image start ==="
-          sudo docker rmi proslam:base
-          sudo docker image tag slam:base_temp proslam:base
-          sudo docker rmi proslam:base_temp
-          sudo docker images 
-          echo "=== Job finished ==="
+         echo "=== Replace old Docker image with temporary image start ==="
+         sudo docker rmi proslam:base
+         sudo docker image tag slam:base_temp proslam:base
+         sudo docker rmi proslam:base_temp
+         sudo docker images 
+         echo "=== Job finished ==="
          
       - name: Clean up Docker image if build fails
         if: failure()
