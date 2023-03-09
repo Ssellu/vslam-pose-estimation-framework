@@ -23,7 +23,7 @@ jobs:
          echo ${{ github.head_ref }}
         
          cd dockerfiles
-         docker build --force-rm -f build.dockerfile -t "proslam:2.1" --build-arg BRANCH=${{ github.head_ref }} . 
+         docker build --force-rm -f build.dockerfile -t "team3:base" --build-arg BRANCH=${{ github.head_ref }} . 
          echo "=== Build finished==="
          
       - name: Clean up Docker image if build fails
