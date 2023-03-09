@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'ubuntu-kinetic'
 
     steps:
     - uses: actions/checkout@v2
@@ -31,10 +31,16 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_d6897ef3150240a080b1156d8db6c485 }}/slkumquat/proslam:${{ github.sha }}
-        file: ./Dockerfile
-
+        file: ./dockerfiles/build.dockerfile
+    - name: Clean up Docker image if build fails
+      if: failure()
+      run: |
+       echo "=== Remove failed image start==="
+       docker rmi -f $(docker images -f "dangling=true" -q)
+       docker images 
+       echo "=== Removal finished==="
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-kinetic
     needs: build
     environment:
       name: 'production'
@@ -49,3 +55,4 @@ jobs:
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_a0f52eb285674a509190f6eee8b44679 }}
         images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_d6897ef3150240a080b1156d8db6c485 }}/slkumquat/proslam:${{ github.sha }}'
+        
