@@ -1,8 +1,8 @@
 # POSE Estimation Framework in VSLAM
 
-## Project Description 
+## Project Description
 
-To train our deep learning system, we need ground truth information. We require a VSLAM (Visual Simultaneous Localization and Mapping) framework that can accurately estimate POSEs in various environments. 
+To train our deep learning system, we need ground truth information. We require a VSLAM (Visual Simultaneous Localization and Mapping) framework that can accurately estimate POSEs in various environments.
 
 We want a clean, modular architecture VSLAM framework that allows us to use various algorithms as desired and conduct experiments to obtain accurate poses. Real-time computation is not a constraint.
 
@@ -17,20 +17,24 @@ We want a clean, modular architecture VSLAM framework that allows us to use vari
 ## Specs
 
 - Ubuntu 18.04
-- OpenCV 4.6
-- Python 3.6.5
+- ROS melodic
+- OpenCV 3.2
+- Python
 - C++ 14
+- Eigen3
 
 ## To-do
-
-- ROS를 쓸까말까? -> 나중에 정하기
-- Docker -> Git Actions(CI)
-  - ubuntu 18.04
 - GUI 유틸리티 추가(?)
 
+## Meeting Log
+- 03/08
+  - CI/CD
+    1. 빌드 가능 여부(기본)
+    2. CLI 아규먼트 별로 Git Action 만들어놓기
+  - 성능지표 중 Xycar 환경 추가 (리얼센스까지는 필요없음)
+    다음주 월/화 중에 두번째 요청사항 들어감!
 
-
-## Detailed Methods 
+## Detailed Methods
 
 ### Image Processing
 
@@ -59,7 +63,7 @@ We want a clean, modular architecture VSLAM framework that allows us to use vari
 |                  |          |         |              |
 |                  |          |         |          |
 
-- Keypoint Detection 
+- Keypoint Detection
   - Moravec, Harris, SIFT, FAST, oFAST(ORB), AKAZE, SuperPoint, KeyNet
 
 - Descriptor Extraction
@@ -69,20 +73,20 @@ We want a clean, modular architecture VSLAM framework that allows us to use vari
   - Floating point descriptor, Binary descriptor
 
 
-- Correspondence Matching 
+- Correspondence Matching
 
   - FLANN-based Matcher (KDTree, Randomized Tree, ...)
 
   - Brute-Force Matcher
 
-### ORB-SLAM2
+## Algorithm Overview
+### Base Algorithm - ProSLAM
+![PROSLAM](https://user-content.gitlab-static.net/c5cc03f792d716a40027d00c427f54b5f3cd26df/68747470733a2f2f64726976652e676f6f676c652e636f6d2f75633f6578706f72743d646f776e6c6f61642669643d315538534a75455476627459677147465649506666555077492d69696b53733473)
+
+### Comparsion Algorithm : ORB-SLAM2
 
 ![ORB-SLAM2-PIPELINE](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*ZWXY3coSBymuqZnv9RZM4g.png)
 
-### ProSLAM
-![PROSLAM](https://user-content.gitlab-static.net/c5cc03f792d716a40027d00c427f54b5f3cd26df/68747470733a2f2f64726976652e676f6f676c652e636f6d2f75633f6578706f72743d646f776e6c6f61642669643d315538534a75455476627459677147465649506666555077492d69696b53733473)
-
-### LSD-SLAM
 
 | 2                                                            | 3                                                            | 4(토)                                                        | 5(일)                                                | 6                                                    | 7                                                            | 8 <중간점검>                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
@@ -112,4 +116,3 @@ https://arxiv.org/abs/1709.04377
 https://jakobengel.github.io/pdf/engel14eccv.pdf
 https://github.com/mateomd-dev/orb-slam2
 https://gitlab.com/srrg-software/srrg_proslam
-https://miro.medium.com

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>srrg_proslam</name>
+  <version>1.0.0</version>
+  <description>The ProSLAM package</description>
+  <maintainer email="schdomin@gmail.com">Dominik Schlegel</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>srrg_cmake_modules</build_depend>
+  <build_depend>srrg_core</build_depend>
+  <build_depend>srrg_hbst</build_depend>
+  <build_depend>srrg_core_viewers</build_depend>
+  <build_depend>srrg_gl_helpers</build_depend>
+  <build_depend>g2o_catkin</build_depend>
+  <build_depend>g2o_slim_edu</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msg</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>message_filters</build_depend>
+  <run_depend>srrg_core</run_depend>
+  <run_depend>srrg_hbst</run_depend>
+  <run_depend>srrg_core_viewers</run_depend>
+  <run_depend>srrg_gl_helpers</run_depend>
+  <run_depend>g2o_catkin</run_depend>
+  <run_depend>g2o_slim_edu</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>message_filters</run_depend>
+</package>

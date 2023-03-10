@@ -1,0 +1,6 @@
+add_library(srrg_proslam_position_tracking_library pose_tracker_3d.cpp)
+
+target_link_libraries(srrg_proslam_position_tracking_library
+  srrg_proslam_aligners_library
+  srrg_proslam_framepoint_generation_library
+)

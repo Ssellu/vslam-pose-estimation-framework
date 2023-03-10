@@ -1,0 +1,72 @@
+before_script:
+
+  #ds repo gets locally cloned into: /builds/srrg-software/srrg_proslam]
+
+  #ds set up machine
+  - apt-get update 
+  - apt-get install -y sudo ssh openssh-client git
+  - apt-get upgrade -y
+
+  #ds generic build dependencies (valid for ubuntu 16.04 and 18.04)
+  - apt install python-catkin-tools -y
+  - apt install build-essential -y
+  - apt install libeigen3-dev -y
+  - apt install libsuitesparse-dev -y
+  - apt install libyaml-cpp-dev -y
+
+  #ds set up g2o (in RELEASE)
+  - mkdir -p /root/source/libraries
+  - cd /root/source/libraries
+  - git clone https://github.com/RainerKuemmerle/g2o.git
+  - mkdir -p g2o/build
+  - cd g2o/build
+  - cmake ../
+  - make -j4
+  - cp g2o/config.h ../g2o/
+  - export G2O_ROOT=/root/source/libraries/g2o
+
+  #ds set up catkin workspace
+  - cd && mkdir -p /root/workspace/src && cd /root/workspace/src
+
+  #ds link this repository for build
+  - ln -s /builds/srrg-software/srrg_proslam srrg_proslam
+
+  #ds fetch proslam SRRG dependencies
+  - cd srrg_proslam
+  - ./pull_srrg_packages.bash
+
+  #ds move back to catkin workspace level
+  - cd /root/workspace
+
+# Build targets
+ubuntu_16_04_ros_kinetic_release:
+  image: osrf/ros:kinetic-desktop-full-xenial
+  stage: build
+  script:
+    - apt install libqglviewer-dev -y
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=RELEASE
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=RELEASE --catkin-make-args tests
+
+ubuntu_16_04_ros_kinetic_debug:
+  image: osrf/ros:kinetic-desktop-full-xenial
+  stage: build
+  script:
+    - apt install libqglviewer-dev -y
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=DEBUG
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=DEBUG --catkin-make-args tests
+
+ubuntu_18_04_ros_melodic_release:
+  image: osrf/ros:melodic-desktop-full-bionic
+  stage: build
+  script:
+    - apt install libqglviewer-dev-qt5 -y
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=RELEASE
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=RELEASE --catkin-make-args tests
+
+ubuntu_18_04_ros_melodic_debug:
+  image: osrf/ros:melodic-desktop-full-bionic
+  stage: build
+  script:
+    - apt install libqglviewer-dev-qt5 -y
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=DEBUG
+    - catkin build srrg_proslam -DCMAKE_BUILD_TYPE=DEBUG --catkin-make-args tests
