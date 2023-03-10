@@ -1,8 +1,5 @@
 FROM osrf/ros:kinetic-desktop-full
 
-LABEL org.opencontainers. image.authors="skumquat@gmail.com"
-
-
 LABEL org.opencontainers.image.authors="slkumquat@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
