@@ -22,18 +22,23 @@ jobs:
          echo "=== Build start==="
          echo ${{ github.head_ref }}
         
-         cd dockerfiles
-         sudo docker build --force-rm -f build.dockerfile -t "team3:base" --build-arg BRANCH=${{ github.head_ref }} . 
+         # cd dockerfiles
+         ##sudo docker build --force-rm -f build.dockerfile -t "team3:base" --build-arg BRANCH=${{ github.head_ref }} . 
+         sudo docker pull slkumquat/proslam:ver2.1
+         
          echo "=== Build finished==="
          
+         echo "=== Run Docker Image ==="
+         sudo docker run -it --ipc=host --net=host --privileged -e -v /tmp/.X11-unix:/tmp/.X11-unix:rw -e NVIDIA_DRIVER_CAPABILITIES=all slkumquat/proslam:ver2.1 /bin/bash
          sudo docker images
-         echo "=== Replace old Docker image with temporary image start ==="
-         sudo docker rmi proslam:base
-         sudo docker image tag slam:base_temp proslam:base
-         sudo docker rmi proslam:base_temp
-         sudo docker images 
-         echo "=== Job finished ==="
          
+         
+         ##echo "=== Replace old Docker image with temporary image start ==="
+         ##sudo docker rmi proslam:base
+         ##sudo docker image tag slam:base_temp proslam:base
+         ##sudo docker rmi proslam:base_temp
+         ##sudo docker images 
+         ##echo "=== Job finished ==="
       - name: Clean up Docker image if build fails
         if: failure()
         run: |
