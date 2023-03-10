@@ -1,0 +1,48 @@
+name: Build Docker Image
+
+on:
+  workflow_dispatch
+
+jobs:
+  Dependency_Build:
+    name: Base docker image
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build Docker image
+        run: |
+         echo "=== Build start==="
+         echo ${{ github.head_ref }}
+        
+         # cd dockerfiles
+         ##sudo docker build --force-rm -f build.dockerfile -t "team3:base" --build-arg BRANCH=${{ github.head_ref }} . 
+         sudo docker pull slkumquat/proslam:ver2.1
+         
+         echo "=== Build finished==="
+         
+         echo "=== Run Docker Image ==="
+         sudo docker run -it --ipc=host --net=host --privileged -e -v /tmp/.X11-unix:/tmp/.X11-unix:rw -e NVIDIA_DRIVER_CAPABILITIES=all slkumquat/proslam:ver2.1 /bin/bash
+         sudo docker images
+         
+         
+         ##echo "=== Replace old Docker image with temporary image start ==="
+         ##sudo docker rmi proslam:base
+         ##sudo docker image tag slam:base_temp proslam:base
+         ##sudo docker rmi proslam:base_temp
+         ##sudo docker images 
+         ##echo "=== Job finished ==="
+      - name: Clean up Docker image if build fails
+        if: failure()
+        run: |
+         echo "=== Remove failed image start==="
+         docker rmi -f $(docker images -f "dangling=true" -q)
+         docker images 
+         echo "=== Removal finished==="
