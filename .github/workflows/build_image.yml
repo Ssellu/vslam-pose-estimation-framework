@@ -1,0 +1,36 @@
+name: Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [ main ]
+env:
+  GET_REPO: export REPO=${GITHUB_REPOSITORY#*/}
+  GET_HASH: export HASH=${GITHUB_SHA}
+
+jobs:
+  Build:
+    name: Build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Build - Build with 3rdParty libs
+        run: |
+          eval $GET_REPO
+          eval $GET_HASH
+          echo "=== Build start ===" 
+          cd dockerfiles
+          sudo docker build --force-rm -f -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
+          echo "=== Build finished ==="
+
+      - name: If Fail - Clean up Docker image if build fails
+        if: failure()
+        run: |
+          echo "=== Clean up start ==="
+          sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
+          sudo docker images
+          echo "=== Clean up finished ==="
