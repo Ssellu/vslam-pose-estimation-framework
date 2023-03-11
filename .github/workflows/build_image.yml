@@ -1,11 +1,6 @@
 name: Build
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches: [ main ]
 env:
   GET_REPO: export REPO=${GITHUB_REPOSITORY#*/}
   GET_HASH: export HASH=${GITHUB_SHA}
