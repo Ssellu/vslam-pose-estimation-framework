@@ -2,9 +2,17 @@
 ## [[ Filename ]]
 ##   d1.base.dockerfile
 ##
-## [[ How to Build dockerfile ]]
+## [[ How to Build dockerfile (GUI off) ]]
 ##   sudo docker build --force-rm -f d1.base.dockerfile -t test:1.0 .
 ##   sudo docker run --name ttest -dit test:1.0
+##
+## [[ How to Build dockerfile (GUI on) ]]
+##   xhost +
+##   sudo docker build --force-rm -f d1.base.dockerfile -t test:1.0 .
+##   sudo docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name ttest test:1.0
+##
+## [[ How to Run Proslam Test App ]]
+##   cd /home/catkin_ws && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app 04.txt -use-gui
 
 FROM osrf/ros:kinetic-desktop-full
 
