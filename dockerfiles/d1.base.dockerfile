@@ -2,13 +2,14 @@
 ## [[ Filename ]]
 ##   d1.base.dockerfile
 ##
-## [[ How to Build dockerfile (GUI off) ]]
+## [[ Build Image ]]
 ##   sudo docker build --force-rm -f d1.base.dockerfile -t test:1.0 .
-##   sudo docker run --name ttest -dit test:1.0
 ##
-## [[ How to Build dockerfile (GUI on) ]]
+## [[ Run Image ]]
+##   (GUI off)
+##   sudo docker run --name ttest -dit test:1.0
+##   (GUI on)
 ##   xhost +
-##   sudo docker build --force-rm -f d1.base.dockerfile -t test:1.0 .
 ##   sudo docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name ttest test:1.0
 ##
 ## [[ How to Run Proslam Test App ]]
@@ -108,8 +109,8 @@ RUN echo "== Install G2O == " && \
 
 RUN echo "== Clone and Build Source Codes == " && \
     cd /home/catkin_ws/src && \
-    git clone https://gitlab.com/srrg-software/srrg_proslam.git && \
-    cd /home/catkin_ws/src/srrg_proslam && ./pull_srrg_packages.bash
+    git clone https://github.com/Ssellu/vslam-pose-estimation-framework.git && \
+    cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
 
 RUN cd /home/catkin_ws &&\
     echo ". /opt/ros/kinetic/setup.sh" >> /home/.bashrc && \
@@ -122,11 +123,7 @@ RUN . /opt/ros/kinetic/setup.sh &&\
     catkin_make -DGIT_TAG=20200410_git
 
 RUN echo ". /home/catkin_ws/devel/setup.sh" >> /home/.bashrc && \
-    echo "source /home/catkin_ws/devel/setup.bash" >> /home/.bashrc && \
-    . /home/.bashrc &&\
-    . /home/catkin_ws/devel/setup.sh &&\
-    rospack profile &&\
-    rospack find srrg_proslam
+    . /home/.bashrc
 
 RUN echo "== Download KITTI Datasets == "
 COPY 04.tar.gz /home/catkin_ws/
