@@ -20,7 +20,7 @@ jobs:
           echo "=== Build start ==="   
           echo ssellu | sudo -S echo "ssellu"
           cd dockerfiles
-          docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f b1.base.dockerfile
+          sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f b1.base.dockerfile
           echo "=== Build finished ==="
 
       - name: If Fail - Clean up Docker image if build fails
@@ -28,6 +28,6 @@ jobs:
         run: |
           echo "=== Clean up start ==="
           echo ssellu | sudo -S echo "ssellu"
-          docker rmi -f $(sudo docker images -f "dangling=true" -q)
-          docker images
+          sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
+          sudo docker images
           echo "=== Clean up finished ==="
