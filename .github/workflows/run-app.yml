@@ -23,7 +23,7 @@ jobs:
           echo "=== Build ProSLAM ==="
           echo ssellu | sudo -S echo "ssellu"
           cd dockerfiles
-          sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
+          sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d4.rebuild-repo.dockerfile
       
       - name: Run ProSLAM
         run: |
