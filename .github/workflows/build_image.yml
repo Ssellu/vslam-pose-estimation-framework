@@ -18,6 +18,7 @@ jobs:
           eval $GET_REPO
           eval $GET_HASH
           echo "=== Build start ==="   
+          echo ssellu | sudo -S echo "ssellu"
           cd dockerfiles
           docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f b1.base.dockerfile
           echo "=== Build finished ==="
@@ -26,6 +27,7 @@ jobs:
         if: failure()
         run: |
           echo "=== Clean up start ==="
+          echo ssellu | sudo -S echo "ssellu"
           docker rmi -f $(sudo docker images -f "dangling=true" -q)
           docker images
           echo "=== Clean up finished ==="
