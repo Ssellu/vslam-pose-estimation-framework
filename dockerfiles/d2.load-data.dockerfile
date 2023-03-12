@@ -14,11 +14,8 @@
 ##
 ## [[ How to Run Proslam Test App ]]
 ##   NOTE : Put the name of target GT into the variable `label` in command below.
-##   label=03 && cd /home/catkin_ws/dataset/"$label" && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app "$label".txt -use-gui
-## 
-## ** WARNING **
-##  - COPY : Requires your own dataset directory path includes GT datasets(tar.gz) for ProSlam. 
-
+##   label=00 && cd /home/catkin_ws/dataset/"$label" && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app "$label".txt -use-gui
+##   label=00 && cd /home/catkin_ws/dataset/"$label" && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app "$label".txt -c "/home/catkin_ws/src/vslam-pose-estimation-framework/configurations/configuration_kitti.yaml" -use-gui
 FROM test:1.0
 
 RUN echo "== Download KITTI Datasets == "

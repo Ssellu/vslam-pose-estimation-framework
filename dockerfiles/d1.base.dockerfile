@@ -10,7 +10,7 @@
 ##   sudo docker run --name ttest -dit test:1.0
 ##   (GUI on)
 ##   xhost +
-##   sudo docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name ttest test:1.0
+##   sudo docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name test test:1.0
 ##
 ## [[ How to Run Proslam Test App ]]
 ##   cd /home/catkin_ws && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app 04.txt -use-gui
@@ -109,7 +109,9 @@ RUN echo "== Install G2O == " && \
 
 RUN echo "== Clone and Build Source Codes == " && \
     cd /home/catkin_ws/src && \
-    git clone https://github.com/Ssellu/vslam-pose-estimation-framework.git && \
+    git clone https://github.com/Ssellu/vslam-pose-estimation-framework.git
+
+RUN echo "== Make ProSlam == " && \
     cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
 
 RUN cd /home/catkin_ws &&\
@@ -124,3 +126,4 @@ RUN . /opt/ros/kinetic/setup.sh &&\
 
 RUN echo ". /home/catkin_ws/devel/setup.sh" >> /home/.bashrc && \
     . /home/.bashrc
+
