@@ -1,6 +1,162 @@
 #include "base_framepoint_generator.h"
 
 namespace proslam {
+ 
+Detector::Detector(){}
+Detector::~Detector(){}
+
+//FAST
+FastDetector::FastDetector() : Detector(){
+  extractor = cv::FastFeatureDetector::create();
+}
+FastDetector::FastDetector(const double _threshold) : Detector(){
+  extractor = cv::FastFeatureDetector::create(std::rint(_threshold));
+}
+FastDetector::~FastDetector(){}
+double FastDetector::getThreshold(){
+  return extractor->getThreshold();
+}
+void FastDetector::setThreshold(const double _threshold){
+  // std::rint
+  extractor->setThreshold(std::rint(_threshold));
+}
+void FastDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+}
+
+//AKAZE
+AkazeDetector::AkazeDetector() : Detector(){
+  extractor = cv::AKAZE::create();
+}
+AkazeDetector::AkazeDetector(const double _threshold) : Detector(){
+  // int descriptor_type=AKAZE::DESCRIPTOR_MLDB, int descriptor_size=0, int descriptor_channels=3, 
+  // float threshold=0.001f, int nOctaves=4, int nOctaveLayers=4, int diffusivity=KAZE::DIFF_PM_G2
+  extractor = cv::AKAZE::create(cv::AKAZE::DESCRIPTOR_MLDB, 0, 3, _threshold/div_value);
+  // extractor = cv::AKAZE::create();
+}
+AkazeDetector::~AkazeDetector(){}
+double AkazeDetector::getThreshold(){
+  return extractor->getThreshold()*div_value;
+  // return 20;
+}
+void AkazeDetector::setThreshold(const double _threshold){
+  extractor->setThreshold(_threshold/div_value);
+  // return;
+}
+void AkazeDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+  std::cout<<"keypoint size:" <<_keypoints.size()<<std::endl;
+}
+
+//ORB
+OrbDetector::OrbDetector() : Detector(){
+  extractor = cv::ORB::create(5000);
+}
+OrbDetector::OrbDetector(const double _threshold) : Detector(){
+  // nfeatures, scaleFactor, nlevels, edgethreshold, firstlevel, wta_k, scoretype, patchsize, fastthreshold
+  extractor = cv::ORB::create(5000, 1.2f, 8, 31, 0, 2, cv::ORB::HARRIS_SCORE, 31, _threshold);
+}
+OrbDetector::~OrbDetector(){}
+double OrbDetector::getThreshold(){
+  return extractor->getFastThreshold();
+  // return extractor->getEdgeThreshold();
+}
+void OrbDetector::setThreshold(const double _threshold){
+  extractor->setFastThreshold(std::rint(_threshold));
+  // extractor->setEdgeThreshold(_threshold);
+}
+void OrbDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+}
+
+//KAZE
+KazeDetector::KazeDetector() : Detector(){
+  extractor = cv::KAZE::create();
+}
+KazeDetector::KazeDetector(const double _threshold) : Detector(){
+  // bool extended=false, bool upright=false, float threshold=0.001f, int nOctaves=4, 
+  // int nOctaveLayers=4, int diffusivity=KAZE::DIFF_PM_G
+  extractor = cv::KAZE::create(0, 0, _threshold/div_value);
+}
+KazeDetector::~KazeDetector(){}
+double KazeDetector::getThreshold(){
+  return extractor->getThreshold()*div_value;
+}
+void KazeDetector::setThreshold(const double _threshold){
+  extractor->setThreshold(_threshold/div_value);
+}
+void KazeDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+  std::cout<<"keypoint size:" <<_keypoints.size()<<std::endl;
+}
+
+//SIFT
+SiftDetector::SiftDetector() : Detector(){
+  extractor = cv::xfeatures2d::SIFT::create();
+}
+SiftDetector::SiftDetector(const double _threshold) : Detector(){
+  // int nfeatures=0, int nOctaveLayers=3, double contrastThreshold=0.04, double edgeThreshold=10, double sigma=1.6)
+  threshold = _threshold / div_value;
+  extractor = cv::xfeatures2d::SIFT::create(0,3, 0.04, threshold);
+}
+SiftDetector::~SiftDetector(){}
+double SiftDetector::getThreshold(){
+  return threshold * div_value;
+}
+void SiftDetector::setThreshold(const double _threshold){
+  threshold = _threshold / div_value;
+  extractor = cv::xfeatures2d::SIFT::create(0,3, 0.04, threshold);
+}
+void SiftDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+  std::cout<<"keypoint size:" <<_keypoints.size()<<std::endl;
+}
+
+//BRISK
+BriskDetector::BriskDetector() : Detector(){
+  extractor = cv::BRISK::create();
+  threshold = 30;
+}
+BriskDetector::BriskDetector(const double _threshold) : Detector(){
+  // int nfeatures=0, int nOctaveLayers=3, double contrastThreshold=0.04, double edgeThreshold=10, double sigma=1.6)
+  threshold = _threshold*1.5;
+  extractor = cv::BRISK::create(threshold);
+}
+BriskDetector::~BriskDetector(){}
+double BriskDetector::getThreshold(){
+  return threshold/1.5;
+}
+void BriskDetector::setThreshold(const double _threshold){
+  threshold = _threshold*1.5;
+  extractor = cv::BRISK::create(threshold);
+}
+void BriskDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+  std::cout<<"keypoint size:" <<_keypoints.size() << "th:" << threshold <<std::endl;
+}
+
+AgastDetector::AgastDetector() : Detector(){
+  extractor = cv::AgastFeatureDetector::create();
+  threshold = 30;
+}
+AgastDetector::AgastDetector(const double _threshold) : Detector(){
+  // int nfeatures=0, int nOctaveLayers=3, double contrastThreshold=0.04, double edgeThreshold=10, double sigma=1.6)
+  threshold = _threshold*1.5;
+  extractor = cv::AgastFeatureDetector::create(threshold);
+}
+AgastDetector::~AgastDetector(){}
+double AgastDetector::getThreshold(){
+  return extractor->getThreshold();
+  // return threshold/1.5;
+}
+void AgastDetector::setThreshold(const double _threshold){
+  // threshold = _threshold*1.5;
+  extractor->setThreshold(_threshold);
+}
+void AgastDetector::detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints){
+  extractor->detect(_image, _keypoints);
+  std::cout<<"keypoint size:" <<_keypoints.size() << "th:" << threshold <<std::endl;
+}
 
 BaseFramePointGenerator::BaseFramePointGenerator(BaseFramePointGeneratorParameters* parameters_): _parameters(parameters_) {
   LOG_INFO(std::cerr << "BaseFramePointGenerator::BaseFramePointGenerator|constructed" << std::endl)
@@ -25,70 +181,87 @@ void  BaseFramePointGenerator::configure(){
   _maximum_descriptor_distance_tracking = _parameters->maximum_descriptor_distance_tracking;
 
   //ds allocate descriptor extractor TODO enable further support and check BIT SIZES
-#if CV_MAJOR_VERSION == 2
-  if (_parameters->descriptor_type == "BRIEF-256") {
-    _descriptor_extractor = new cv::BriefDescriptorExtractor(DESCRIPTOR_SIZE_BYTES);
-  } else if (_parameters->descriptor_type == "ORB-256") {
-    _descriptor_extractor        = new cv::OrbDescriptorExtractor();
-    _parameters->descriptor_type = "ORB-256";
-  } else {
-    LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: " << _parameters->descriptor_type
-                          << " is not implemented, defaulting to ORB-256" << std::endl)
-    _descriptor_extractor        = new cv::OrbDescriptorExtractor();
-    _parameters->descriptor_type = "ORB-256";
-  }
-#elif CV_MAJOR_VERSION == 3
-  if (_parameters->descriptor_type == "BRIEF-256") {
+
+  if (_parameters->descriptor_type == "BRIEF") {
     #ifdef SRRG_PROSLAM_HAS_OPENCV_CONTRIB
       _descriptor_extractor = cv::xfeatures2d::BriefDescriptorExtractor::create(DESCRIPTOR_SIZE_BYTES);
     #else
-      LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: BRIEF-256"
-                            << " is not available in current build, defaulting to ORB-256" << std::endl)
+      LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: BRIEF"
+                            << " is not available in current build, defaulting to ORB" << std::endl)
       _descriptor_extractor        = cv::ORB::create();
-      _parameters->descriptor_type = "ORB-256";
+      _parameters->descriptor_type = "ORB";
     #endif
-  } else if (_parameters->descriptor_type == "ORB-256") {
+    
+  } 
+  else if (_parameters->descriptor_type == "ORB") {
     _descriptor_extractor = cv::ORB::create();
-  } else if (_parameters->descriptor_type == "BRISK-512") {
+  } 
+  else if (_parameters->descriptor_type == "BRISK") {
     _descriptor_extractor = cv::BRISK::create();
-  } else if (_parameters->descriptor_type == "FREAK-512") {
+  }
+  else if (_parameters->descriptor_type == "AKAZE"){
+    _descriptor_extractor = cv::AKAZE::create();
+  }
+  else if (_parameters->descriptor_type == "KAZE"){
+    _descriptor_extractor = cv::KAZE::create();
+  }
+  else if (_parameters->descriptor_type == "SIFT"){
+    _descriptor_extractor = cv::xfeatures2d::SIFT::create();
+  }
+  else if (_parameters->descriptor_type == "FREAK") {
     #ifdef SRRG_PROSLAM_HAS_OPENCV_CONTRIB
         _descriptor_extractor = cv::xfeatures2d::FREAK::create();
     #else
-        LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: FREAK-512"
-                              << " is not available in current build, defaulting to ORB-256" << std::endl)
+        LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: FREAK"
+                              << " is not available in current build, defaulting to ORB" << std::endl)
         _descriptor_extractor        = cv::ORB::create();
-        _parameters->descriptor_type = "ORB-256";
+        _parameters->descriptor_type = "ORB";
     #endif
-  } else {
-    LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: " << _parameters->descriptor_type
-                          << " is not implemented, defaulting to ORB-256" << std::endl)
-    _descriptor_extractor        = cv::ORB::create();
-    _parameters->descriptor_type = "ORB-256";
   }
-#endif
+  else {
+    LOG_WARNING(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: " << _parameters->descriptor_type
+                          << " is not implemented, defaulting to ORB" << std::endl)
+    _descriptor_extractor        = cv::ORB::create();
+    _parameters->descriptor_type = "ORB";
+  }
 
   //ds log chosen descriptor type and size
+  LOG_INFO(std::cerr << "BaseFramePointGenerator::configure|detector_type: " << _parameters->detector_type << std::endl)
   LOG_INFO(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: " << _parameters->descriptor_type
                      << " (memory: " << SRRG_PROSLAM_DESCRIPTOR_SIZE_BITS << "b)" << std::endl)
 
   //ds allocate and initialize detector grid structure
-  _detectors           = new cv::Ptr<cv::FastFeatureDetector>*[_parameters->number_of_detectors_vertical];
+  // _detectors           = new cv::Ptr<cv::Feature2D>*[_parameters->number_of_detectors_vertical];
+  _detectors = new Detector**[_parameters->number_of_detectors_vertical];
   _detector_regions    = new cv::Rect*[_parameters->number_of_detectors_vertical];
   _detector_thresholds = new real*[_parameters->number_of_detectors_vertical];
   const real pixel_rows_per_detector = static_cast<real>(_number_of_rows_image)/_parameters->number_of_detectors_vertical;
   const real pixel_cols_per_detector = static_cast<real>(_number_of_cols_image)/_parameters->number_of_detectors_horizontal;
   for (uint32_t r = 0; r < _parameters->number_of_detectors_vertical; ++r) {
-    _detectors[r]           = new cv::Ptr<cv::FastFeatureDetector>[_parameters->number_of_detectors_horizontal];
+    // _detectors[r]           = new cv::Ptr<cv::Feature2D>[_parameters->number_of_detectors_horizontal];
+    _detectors[r] = new Detector*[_parameters->number_of_detectors_horizontal];
     _detector_regions[r]    = new cv::Rect[_parameters->number_of_detectors_horizontal];
     _detector_thresholds[r] = new real[_parameters->number_of_detectors_horizontal];
-    for (uint32_t c = 0; c < _parameters->number_of_detectors_horizontal; ++c) {
-#if CV_MAJOR_VERSION == 2
-      _detectors[r][c] = new cv::FastFeatureDetector(_parameters->detector_threshold_minimum);
-#else
-      _detectors[r][c] = cv::FastFeatureDetector::create(_parameters->detector_threshold_minimum);
-#endif
 
+    for (uint32_t c = 0; c < _parameters->number_of_detectors_horizontal; ++c) {
+      if (_parameters->detector_type == "FAST")
+        _detectors[r][c] = new FastDetector(_parameters->detector_threshold_minimum);
+      else if(_parameters->detector_type == "AKAZE")
+        _detectors[r][c] = new AkazeDetector(_parameters->detector_threshold_minimum);
+      else if(_parameters->detector_type == "ORB")
+        _detectors[r][c] = new OrbDetector(_parameters->detector_threshold_minimum);
+      else if(_parameters->detector_type == "KAZE")
+        _detectors[r][c] = new KazeDetector(_parameters->detector_threshold_minimum);
+      else if(_parameters->detector_type == "SIFT")
+        _detectors[r][c] = new SiftDetector(_parameters->detector_threshold_minimum);
+      else if(_parameters->detector_type == "BRISK")
+        _detectors[r][c] = new BriskDetector(_parameters->detector_threshold_minimum);
+      else if(_parameters->detector_type == "AGAST")
+        _detectors[r][c] = new AgastDetector(_parameters->detector_threshold_minimum);
+      else{
+        _detectors[r][c] = new FastDetector(_parameters->detector_threshold_minimum);
+        _parameters->descriptor_type = "ORB";
+      }
       //ds consider small overlaps of detector image regions to avoid point discard at borders
       int32_t offset_width  = 0;
       int32_t offset_height = 0;
@@ -162,6 +335,7 @@ BaseFramePointGenerator::~BaseFramePointGenerator() {
   LOG_INFO(std::cerr << "BaseFramePointGenerator::~BaseFramePointGenerator|destroying" << std::endl)
 
   //ds deallocate dynamic data structures: detectors
+  // if (_detector_regions && _detector_thresholds) {
   if (_detectors && _detector_regions && _detector_thresholds) {
     for (uint32_t r = 0; r < _parameters->number_of_detectors_vertical; ++r) {
       delete[] _detectors[r];
@@ -185,21 +359,25 @@ void BaseFramePointGenerator::detectKeypoints(const cv::Mat& intensity_image_,
                                               std::vector<cv::KeyPoint>& keypoints_,
                                               const bool ignore_minimum_detector_threshold_) {
   CHRONOMETER_START(keypoint_detection)
-
   //ds detect new keypoints in each image region
   for (uint32_t r = 0; r < _parameters->number_of_detectors_vertical; ++r) {
     for (uint32_t c = 0; c < _parameters->number_of_detectors_horizontal; ++c) {
-
+    
       //ds detect keypoints in current region
       std::vector<cv::KeyPoint> keypoints_per_detector(0);
       _detectors[r][c]->detect(intensity_image_(_detector_regions[r][c]), keypoints_per_detector);
+      // std::cout << keypoints_per_detector.size() <<std::endl;
+      std::cout <<"________________________________________________"<<std::endl;
+      std::cout<<"angle:"<<keypoints_per_detector[0].angle<<std::endl;
+      std::cout<<"class_id:"<<keypoints_per_detector[0].class_id<<std::endl;
+      std::cout<<"octave:"<<keypoints_per_detector[0].octave<<std::endl;
+      std::cout<<"response:"<<keypoints_per_detector[0].response<<std::endl;
+      std::cout<<"size:"<<keypoints_per_detector[0].size<<std::endl;
+      std::cout <<"________________________________________________"<<std::endl;
 
       //ds retrieve currently set threshold for this detector
-#if CV_MAJOR_VERSION == 2
-      real detector_threshold = _detectors[r][c]->getInt("threshold");
-#else
       real detector_threshold = _detectors[r][c]->getThreshold();
-#endif
+      std::cout << "threshold:" << detector_threshold <<std::endl;
 
       //ds compute point delta: 100% loss > -1, 100% gain > +1
       const real delta = (static_cast<real>(keypoints_per_detector.size())-_target_number_of_keypoints_per_detector)/_target_number_of_keypoints_per_detector;
@@ -233,7 +411,6 @@ void BaseFramePointGenerator::detectKeypoints(const cv::Mat& intensity_image_,
           detector_threshold = _parameters->detector_threshold_maximum;
         }
       }
-
       //ds set treshold variable (will be effectively changed by calling adjustDetectorThresholds)
       _detector_thresholds[r][c] += detector_threshold;
 
@@ -253,23 +430,21 @@ void BaseFramePointGenerator::detectKeypoints(const cv::Mat& intensity_image_,
 void BaseFramePointGenerator::computeDescriptors(const cv::Mat& intensity_image_, std::vector<cv::KeyPoint>& keypoints_, cv::Mat& descriptors_) {
   CHRONOMETER_START(descriptor_extraction)
   _descriptor_extractor->compute(intensity_image_, keypoints_, descriptors_);
+  std::cout << "descriptor size" << descriptors_.size() << std::endl;
   CHRONOMETER_STOP(descriptor_extraction)
 }
 
 void BaseFramePointGenerator::adjustDetectorThresholds() {
+  if(_parameters->detector_type == "SIFT")
+    return;
   _mean_detector_threshold = 0;
   for (uint32_t r = 0; r < _parameters->number_of_detectors_vertical; ++r) {
     for (uint32_t c = 0; c < _parameters->number_of_detectors_horizontal; ++c) {
-
+      // std::cout<<"th:"<<_detector_thresholds[r][c]<<std::endl;
       //ds compute average threshold over last detections
       _detector_thresholds[r][c] /= _number_of_detections;
       _mean_detector_threshold += _detector_thresholds[r][c];
-
-#if CV_MAJOR_VERSION == 2
-      _detectors[r][c]->setInt("threshold", std::rint(_detector_thresholds[r][c]));
-#else
-      _detectors[r][c]->setThreshold(std::rint(_detector_thresholds[r][c]));
-#endif
+      _detectors[r][c]->setThreshold(_detector_thresholds[r][c]);
 
       //ds reset bookkeeping for next detection(s)
       _detector_thresholds[r][c] = 0;
@@ -313,4 +488,5 @@ const PointCoordinates BaseFramePointGenerator::getPointInCamera(const cv::Point
   //ds compute midpoint in current frame
   return (point_in_camera_current+camera_previous_to_current_*point_in_camera_previous)/2.0;
 }
+
 }
