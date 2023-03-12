@@ -19,7 +19,7 @@ jobs:
           echo "=== Build ProSLAM ==="
           echo ssellu | sudo -S echo "ssellu"
           cd dockerfiles
-          sudo docker build --force-rm --no-cache -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f build.dockerfile
+          sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
       
       - name: Run ProSLAM
         run: |
@@ -33,7 +33,7 @@ jobs:
         if: failure()
         run: |
           echo "=== Clean up start ==="
-          echo 717lumos | sudo -S echo ""
+          echo ssellu | sudo -S echo "ssellu"
           sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
           sudo docker images
           echo "=== Clean up finished ==="
