@@ -167,8 +167,9 @@ public:
   //! @brief parameter printing function
   virtual void print() const;
 
+  std::string detector_type = "FAST";
   //! @brief desired descriptor type (OpenCV string + bit size): BRIEF-256, ORB-256, BRISK-512, FREAK-512, ..
-  std::string descriptor_type = "ORB-256";
+  std::string descriptor_type = "ORB";
 
   //! @brief dynamic thresholds for feature detection
   real target_number_of_keypoints_tolerance = 0.1;
@@ -399,7 +400,7 @@ public:
   //! @brief display options
   bool frames_drawn       = true;
   bool landmarks_drawn    = true;
-  bool follow_robot       = false;
+  bool follow_robot       = true;
   bool ground_truth_drawn = false;
 
   //! @brief default sizes

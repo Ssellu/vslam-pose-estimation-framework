@@ -10,7 +10,7 @@ command_line:
   topic_camera_info_right: /camera_right/camera_info
   
   #ds dataset file name
-  dataset_file_name:
+  dataset_file_name: /home/01/01.txt
 
   #ds options
   option_use_gui:                   false
@@ -24,12 +24,12 @@ command_line:
   option_save_pose_graph:           false
   
   #topic synchronization
-  maximum_time_interval_seconds:    0.01
+  maximum_time_interval_seconds:    0.001
   
 landmark:
 
   #ds maximum measured distance kernel for landmark optimization
-  maximum_error_squared_meters: 100
+  maximum_error_squared_meters: 25
 
 local_map:
 
@@ -42,57 +42,64 @@ local_map:
 world_map:
 
   #ds key frame generation properties
-  minimum_distance_traveled_for_local_map: 1.0
+  minimum_distance_traveled_for_local_map: 0.5
   minimum_degrees_rotated_for_local_map:   0.5
   minimum_number_of_frames_for_local_map:  4
 
 base_framepoint_generation:
-
-  #ds feature descriptor type (BRIEF-128/256/512, ORB-256, BRISK-512, FREAK-512, A-KAZE-486, BinBoost-064)
-  descriptor_type: ORB-256
+  # FAST: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
+  # ORB: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT
+  # AKAZE: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(1,L2 not visual), KAZE(L2), SIFT(x)
+  # KAZE: ORB, BRIEF, BRISK(1), FREAK, AKAZE(1), KAZE(x), SIFT(x)
+  # BRISK: ORB(1), BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
+  # SIFT: ORB(x), BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
+  # AGAST: ORB, BRIEF, BRISK(x), FREAK(x), AKAZE(x), KAZE(x), SIFT(x)
+  detector_type: FAST
+  #ds feature descriptor type (ORB, BRIEF, BRISK, FREAK, AKAZE, KAZE, SIFT)
+  descriptor_type: ORB
 
   #ds dynamic thresholds for feature detection
-  target_number_of_keypoints_tolerance: 0.2
-  detector_threshold_maximum_change:    0.2
-  detector_threshold_minimum:           15
-  detector_threshold_maximum:           30
-  number_of_detectors_vertical:         2
-  number_of_detectors_horizontal:       2
+  target_number_of_keypoints_tolerance: 0.1
+  detector_threshold_maximum_change:    0.1
+  detector_threshold_minimum:           20
+  detector_threshold_maximum:           100
+  number_of_detectors_vertical:         1
+  number_of_detectors_horizontal:       1
 
   #point tracking thresholds
   minimum_projection_tracking_distance_pixels: 15
   maximum_projection_tracking_distance_pixels: 50
 
   #ds dynamic thresholds for descriptor tracking
-  minimum_descriptor_distance_tracking: 30
-  maximum_descriptor_distance_tracking: 85
+  minimum_descriptor_distance_tracking: 25.6
+  maximum_descriptor_distance_tracking: 51.2
 
   #rigid stereo sensor configuration
-  maximum_reliable_depth_meters: 10
+  maximum_reliable_depth_meters: 15
   maximum_depth_meters:          1000
-  minimum_depth_meters:          1
+  minimum_depth_meters:          0.1
   
   #feature density regularization
   enable_keypoint_binning: true
-  bin_size_pixels:         20
+  bin_size_pixels:         15
 
 stereo_framepoint_generation:
 
   #ds stereo: triangulation
-  maximum_matching_distance_triangulation: 90
+  maximum_matching_distance_triangulation: 51.2
   minimum_disparity_pixels:                1
   maximum_epipolar_search_offset_pixels:   0
 
 tracking:
 
   #ds this criteria is used for the decision of whether creating a landmark or not from a track of framepoints
-  minimum_track_length_for_landmark_creation: 2
+  minimum_track_length_for_landmark_creation: 1
 
   #ds track lost criteria
   minimum_number_of_landmarks_to_track: 5
 
   #point tracking thresholds
-  tunnel_vision_ratio: 0.5
+  tunnel_vision_ratio: 0.75
   good_tracking_ratio: 0.2
 
   #landmark track recovery (if enabled)
@@ -107,36 +114,36 @@ tracking:
   
   #pose optimization: aligner unit configuration
   aligner->error_delta_for_convergence:  1e-3
-  aligner->maximum_error_kernel:         4
-  aligner->damping:                      5
+  aligner->maximum_error_kernel:         10
+  aligner->damping:                      6
   aligner->maximum_number_of_iterations: 1000
-  aligner->minimum_number_of_inliers:    100
+  aligner->minimum_number_of_inliers:    10
   aligner->minimum_inlier_ratio:         0
   aligner->enable_inverse_depth_as_information: true
 
 relocalization:
 
   #maximum permitted descriptor distance to still be considered as a match
-  maximum_descriptor_distance: 25
+  maximum_descriptor_distance: 25.6
 
   #minimum query interspace
-  preliminary_minimum_interspace_queries: 50
+  preliminary_minimum_interspace_queries: 10
 
   #minimum relative number of matches
-  preliminary_minimum_matching_ratio: 0.05
+  preliminary_minimum_matching_ratio: 0.1
 
   #minimum absolute number of matches
-  minimum_number_of_matched_landmarks: 25
+  minimum_number_of_matched_landmarks: 50
 
   #correspondence retrieval
   minimum_matches_per_correspondence: 0
   
   #icp: aligner unit configuration
   aligner->error_delta_for_convergence:  1e-5
-  aligner->maximum_error_kernel:         1.0
+  aligner->maximum_error_kernel:         10
   aligner->damping:                      0.0
-  aligner->maximum_number_of_iterations: 100
-  aligner->minimum_number_of_inliers:    10
+  aligner->maximum_number_of_iterations: 1000
+  aligner->minimum_number_of_inliers:    100
   aligner->minimum_inlier_ratio:         0.5
 
 graph_optimization:
@@ -154,7 +161,7 @@ graph_optimization:
   identifier_space: 1e9
   
   #maximum number of iterations graph optimization TODO proper termination criterion for GAUSS_NEWTON
-  maximum_number_of_iterations: 10
+  maximum_number_of_iterations: 100
 
   #determines window size for bundle adjustment
   number_of_frames_per_bundle_adjustment: 100

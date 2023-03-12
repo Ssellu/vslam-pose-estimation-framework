@@ -341,6 +341,7 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
     }
 
     //FramepointGeneration (GENERIC)
+    PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, detector_type, std::string)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, descriptor_type, std::string)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, target_number_of_keypoints_tolerance, real)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, detector_threshold_minimum, int32_t)
