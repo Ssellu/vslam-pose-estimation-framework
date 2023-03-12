@@ -18,7 +18,7 @@ jobs:
           eval $GET_REPO
           eval $GET_HASH
           echo "=== Build start ==="
-          echo ssellu | sudo -S echo ""         
+          echo ssellu | sudo -S echo "ssellu"         
           cd dockerfiles
           sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f b1.base.dockerfile
           echo "=== Build finished ==="
