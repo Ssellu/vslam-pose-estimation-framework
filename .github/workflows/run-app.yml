@@ -1,0 +1,39 @@
+name: Run
+on: workflow_dispatch
+env:
+  GET_REPO: export REPO=${GITHUB_REPOSITORY#*/}
+  GET_HASH: export HASH=${GITHUB_SHA}
+
+jobs:
+  Run:
+    name: Run
+    runs-on: self-hosted
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Build ProSLAM
+        run: |
+          eval $GET_REPO
+          eval $GET_HASH
+          echo "=== Build ProSLAM ==="
+          echo ssellu | sudo -S echo "ssellu"
+          cd dockerfiles
+          sudo docker build --force-rm --no-cache -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f build.dockerfile
+      
+      - name: Run ProSLAM
+        run: |
+          eval $GET_REPO
+          eval $GET_HASH
+          echo "=== Run ProSLAM ==="
+          echo ssellu | sudo -S echo "ssellu"
+          docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name running_proslam ${REPO}:${HASH}
+
+      - name: If Fail - Clean up Docker image if build fails
+        if: failure()
+        run: |
+          echo "=== Clean up start ==="
+          echo 717lumos | sudo -S echo ""
+          sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
+          sudo docker images
+          echo "=== Clean up finished ==="
