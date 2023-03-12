@@ -10,7 +10,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: /home/catkin_ws/src/vslam-pose-estimation-framework
+        working-directory: ~/catkin_ws/src/vslam-pose-estimation-framework
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
