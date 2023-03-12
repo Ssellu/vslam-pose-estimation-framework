@@ -21,7 +21,6 @@ jobs:
           eval $GET_REPO
           eval $GET_HASH
           echo "=== Build ProSLAM ==="
-          echo ssellu | sudo -S echo "ssellu"
           cd dockerfiles
           sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d4.rebuild-repo.dockerfile
       
@@ -30,14 +29,12 @@ jobs:
           eval $GET_REPO
           eval $GET_HASH
           echo "=== Run ProSLAM ==="
-          echo ssellu | sudo -S echo "ssellu"
           docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name d2.run-app.dockerfile ${REPO}:${HASH}
 
       - name: If Fail - Clean up Docker image if build fails
         if: failure()
         run: |
           echo "=== Clean up start ==="
-          echo ssellu | sudo -S echo "ssellu"
           sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
           sudo docker images
           echo "=== Clean up finished ==="
