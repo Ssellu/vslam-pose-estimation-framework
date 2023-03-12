@@ -5,11 +5,11 @@ env:
   GET_HASH: export HASH=${GITHUB_SHA}
 
 jobs:
-  Run:
-    name: Run
+  container-test-job:
     runs-on: self-hosted
     container:
       image: test:1.2
+    name: Run
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
