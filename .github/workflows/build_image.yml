@@ -23,11 +23,3 @@ jobs:
           sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
           echo "=== Build finished ==="
 
-      - name: If Fail - Clean up Docker image if build fails
-        if: failure()
-        run: |
-          echo "=== Clean up start ==="
-          echo ssellu | sudo -S echo "ssellu"
-          sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
-          sudo docker images
-          echo "=== Clean up finished ==="
