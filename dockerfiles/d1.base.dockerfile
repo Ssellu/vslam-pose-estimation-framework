@@ -124,9 +124,3 @@ RUN . /opt/ros/kinetic/setup.sh &&\
 
 RUN echo ". /home/catkin_ws/devel/setup.sh" >> /home/.bashrc && \
     . /home/.bashrc
-
-RUN echo "== Download KITTI Datasets == "
-COPY 04.tar.gz /home/catkin_ws/
-
-RUN cd /home/catkin_ws &&\
-    tar -xzvf 04.tar.gz
