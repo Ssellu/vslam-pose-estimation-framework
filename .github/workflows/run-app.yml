@@ -11,7 +11,11 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
-
+        
+      - name: ls
+        run: |
+          ls -al
+          
       - name: Build ProSLAM
         run: |
           eval $GET_REPO
@@ -27,7 +31,7 @@ jobs:
           eval $GET_HASH
           echo "=== Run ProSLAM ==="
           echo ssellu | sudo -S echo "ssellu"
-          docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name running_proslam ${REPO}:${HASH}
+          docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name d2.run-app.dockerfile ${REPO}:${HASH}
 
       - name: If Fail - Clean up Docker image if build fails
         if: failure()
