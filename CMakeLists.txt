@@ -44,6 +44,15 @@ message("${PROJECT_NAME}|using Eigen version: '3' (${EIGEN3_INCLUDE_DIR})")
 #ds enable Eigen for HBST
 add_definitions(-DSRRG_HBST_HAS_EIGEN)
 
+
+find_package(easy_profiler REQUIRED HINTS /home/catkin_ws/src/easy_profiler/install/lib/cmake/easy_profiler)
+if(${easy_profiler_FOUND})
+  set(EASY_PROFILER_LIBS easy_profiler)
+  set(easy_profiler_INCLUDE_DIRS /home/catkin_ws/src/easy_profiler/install/include)
+else()
+  message("Not Found: Easy-profiler")
+endif()
+
 #ds check if a supported ros version is installed to determine which packages we include
 set(SRRG_PROSLAM_HAS_ROS false)
 if("$ENV{ROS_DISTRO}" STREQUAL "kinetic" OR "$ENV{ROS_DISTRO}" STREQUAL "indigo" OR "$ENV{ROS_DISTRO}" STREQUAL "melodic")
@@ -62,6 +71,7 @@ if("$ENV{ROS_DISTRO}" STREQUAL "kinetic" OR "$ENV{ROS_DISTRO}" STREQUAL "indigo"
     nav_msgs
     message_filters
     image_geometry
+    easy_profiler
   )
 
   #ds switch to ROS opencv libraries without calling find_package to avoid conflicts with other existing OpenCV installations
@@ -156,6 +166,8 @@ endif()
 #ds load suite sparse for pose graph optimization
 find_package(SuiteSparse REQUIRED)
 
+
+
 #ds specify additional locations of header files
 #ds treating them as system includes to surpress warnings (!)
 include_directories(SYSTEM
@@ -166,6 +178,7 @@ include_directories(SYSTEM
   ${QGLVIEWER_INCLUDE_DIR}
   ${catkin_INCLUDE_DIRS}
   ${SRRG_QT_INCLUDE_DIRS}
+  ${easy_profiler_INCLUDE_DIRS}
   src
 )
 
@@ -183,6 +196,7 @@ catkin_package(
   ${QGLVIEWER_INCLUDE_DIR}
   ${catkin_INCLUDE_DIRS}
   ${SRRG_QT_INCLUDE_DIRS}
+  ${easy_profiler_INCLUDE_DIRS}
   src
 
   LIBRARIES
@@ -206,6 +220,7 @@ catkin_package(
   ${OPENGL_glu_LIBRARY}
   ${QGLVIEWER_LIBRARY}
   ${SRRG_QT_LIBRARIES}
+  ${EASY_PROFILER_LIBS}
 )
 
 #ds set sources
