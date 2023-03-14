@@ -34,6 +34,8 @@ RUN echo "== Install Basic Tools ==" && \
     apt-get install vim -y && \
     apt-get install python3 -y && \
     apt-get install python3-pip -y && \
+    apt-get install curl -y && \
+    apt-get install dpkg -y && \
     # Related to JetBrains CLion Docker develpoment...
     apt-get install -y ssh && \
     apt-get install -y gcc && \
@@ -63,6 +65,10 @@ RUN echo "== Install ProSLAM Prerequisites == " && \
 
 RUN apt-get install libssl-dev -y
 RUN apt-get install python-catkin-tools -y
+
+RUN echo " == Eigen Version Update ==" && \
+    cd /home && \
+    curl http://security.ubuntu.com/ubuntu/pool/universe/e/eigen3/libeigen3-dev_3.3.4-4_all.deb -o libeigen3-dev_3.3.4-4_all.deb && dpkg -i libeigen3-dev_3.3.4-4_all.deb
 
 RUN echo "== Install CMake Latest version == " && \
     cd home && \
