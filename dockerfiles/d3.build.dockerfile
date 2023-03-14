@@ -30,12 +30,6 @@ RUN cd /home/catkin_ws/src && git clone https://github.com/yse/easy_profiler.git
 RUN echo "== Make ProSlam == " && \
     cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
 
-RUN cd /home/catkin_ws &&\
-    echo ". /opt/ros/kinetic/setup.sh" >> /home/.bashrc && \
-    echo "export ROS_HOSTNAME=localhost" >> /home/.bashrc && \
-    echo "export ROS_MASTER_URI=http://localhost:11311" >> /home/.bashrc && \
-    . /home/.bashrc
-
 RUN . /opt/ros/kinetic/setup.sh &&\
     cd /home/catkin_ws &&\
     catkin_make -DGIT_TAG=20200410_git
