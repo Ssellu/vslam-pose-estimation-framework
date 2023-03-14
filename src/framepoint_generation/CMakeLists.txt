@@ -7,4 +7,5 @@ add_library(srrg_proslam_framepoint_generation_library
 
 target_link_libraries(srrg_proslam_framepoint_generation_library
   srrg_proslam_types_library
+  easy_profiler
 )

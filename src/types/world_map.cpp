@@ -305,6 +305,7 @@ void WorldMap::setTrack(Frame* frame_) {
 void WorldMap::mergeLandmarks(const Closure::ClosureConstraintVector& closures_) {
   CHRONOMETER_START(landmark_merging)
 
+  EASY_BLOCK("WorldMap::mergeLandmarks", profiler::colors::Blue);
   //ds keep track of the best merged references
   //ds we need to do this since we're processing multiple closures here,
   //ds which possibly contain different query-reference correspondences
@@ -471,6 +472,8 @@ void WorldMap::mergeLandmarks(const Closure::ClosureConstraintVector& closures_)
   }
   LOG_DEBUG(std::cerr << "WorldMap::mergeLandmarks|merged landmarks: " << merged_landmark_identifiers.size() << std::endl)
   _number_of_merged_landmarks += merged_landmark_identifiers.size();
+
+  EASY_END_BLOCK;
   CHRONOMETER_STOP(landmark_merging)
 }
 }

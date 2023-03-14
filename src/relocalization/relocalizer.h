@@ -1,6 +1,11 @@
 #pragma once
+
+#include <easy/profiler.h>
+
 #include "aligners/xyz_aligner.h"
 #include "closure.h"
+
+#define USING_EASY_PROFILER
 
 namespace proslam {
 

@@ -13,4 +13,5 @@ target_link_libraries(srrg_proslam_types_library
   srrg_messages_library
   ${OpenCV_LIBS}
   yaml-cpp
+  easy_profiler
 )

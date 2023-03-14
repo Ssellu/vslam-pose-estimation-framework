@@ -1,6 +1,9 @@
 #ds main executable (pthread is used for the GUI thread)
 add_executable(app app.cpp)
-target_link_libraries(app srrg_proslam_slam_assembly_library -pthread)
+target_link_libraries(app
+  srrg_proslam_slam_assembly_library
+  -pthread
+  easy_profiler)
 add_executable(srrg_proslam_app app.cpp)
 target_link_libraries(srrg_proslam_app srrg_proslam_slam_assembly_library -pthread)
 

@@ -5,7 +5,7 @@
 
 int32_t main(int32_t argc_, char** argv_)
 {
-  EASY_PROFILER_ENABLE
+  EASY_PROFILER_ENABLE;
 
 #ifdef SRRG_MERGE_DESCRIPTORS
   std::cerr << "main|HBST descriptor merging enabled" << std::endl;
@@ -42,10 +42,11 @@ int32_t main(int32_t argc_, char** argv_)
   std::shared_ptr<std::thread> slam_thread = nullptr;
 
   // ds start system
-  //  Start easy_profiler
+
   try
   {
-    // EASY_BLOCK("Proslam", profiler::colors::Black)
+    //  Start easy_profiler
+    EASY_BLOCK("Proslam", profiler::colors::Black)
     // ds load cameras
     slam_system.loadCamerasFromMessageFile();
 
@@ -113,11 +114,11 @@ int32_t main(int32_t argc_, char** argv_)
     slam_system.writeTrajectoryTUM("trajectory_tum.txt");
 
     // End easy_profiler
-    // EASY_END_BLOCK
-    // profiler::dumpBlocksToFile("/home/catkin_ws/test_result/test_profile.prof");
-    // std::cerr << DOUBLE_BAR << std::endl;
-    // std::cerr << "main|Dump blocks..." << std::endl;
-    // std::cerr << DOUBLE_BAR << std::endl;
+    EASY_END_BLOCK
+    profiler::dumpBlocksToFile("/home/catkin_ws/test_result/test_profile.prof");
+    std::cerr << DOUBLE_BAR << std::endl;
+    std::cerr << "main|Dump blocks..." << std::endl;
+    std::cerr << DOUBLE_BAR << std::endl;
     // ds save g2o graph to disk
     if (parameters->command_line_parameters->option_save_pose_graph)
     {
@@ -140,7 +141,6 @@ int32_t main(int32_t argc_, char** argv_)
     }
     std::cerr << "main|all threads successfully joined" << std::endl;
   }
-
   // ds clean up dynamic memory
 
   delete parameters;

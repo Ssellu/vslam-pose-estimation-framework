@@ -88,7 +88,11 @@ void PoseTracker3D::compute() {
 
     //ds search point tracks
     CHRONOMETER_START(tracking);
+    EASY_BLOCK("PoseTracker3D::compute->track", profiler::colors::Green);
+
     _track(previous_frame, current_frame, track_by_appearance);
+
+    EASY_END_BLOCK;
     CHRONOMETER_STOP(tracking);
   }
 
@@ -115,9 +119,13 @@ void PoseTracker3D::compute() {
 
       //ds solve pose on frame points only
       CHRONOMETER_START(pose_optimization);
+      EASY_BLOCK("PoseTracker3D::compute->pose_optim", profiler::colors::Brown);
+
       _pose_optimizer->parameters()->enable_inverse_depth_as_information = false;
       _pose_optimizer->initialize(previous_frame, current_frame, _previous_to_current_camera);
       _pose_optimizer->converge();
+
+      EASY_END_BLOCK;
       CHRONOMETER_STOP(pose_optimization);
 
       //ds if the pose computation result is not acceptable
@@ -175,8 +183,12 @@ void PoseTracker3D::compute() {
     //ds recover lost points based on refined pose
     if (_parameters->enable_landmark_recovery) {
       CHRONOMETER_START(point_recovery)
+      EASY_BLOCK("PoseTracker3D::compute->framepoint_generator->recoverPoints", profiler::colors::Pink);
+
       _framepoint_generator->recoverPoints(current_frame, _lost_points);
       _number_of_tracked_points = current_frame->points().size();
+
+      EASY_END_BLOCK;
       CHRONOMETER_STOP(point_recovery)
     }
 
@@ -194,6 +206,7 @@ void PoseTracker3D::compute() {
 
   //ds compute remaining points in frame
   CHRONOMETER_START(track_creation)
+
   _framepoint_generator->compute(current_frame);
   CHRONOMETER_STOP(track_creation)
   current_frame->setStatus(_status);
@@ -461,6 +474,7 @@ void PoseTracker3D::_prunePoints(Frame* frame_) {
 //ds updates existing or creates new landmarks for framepoints of the provided frame
 void PoseTracker3D::_updatePoints(WorldMap* context_, Frame* frame_) {
   CHRONOMETER_START(landmark_optimization)
+  EASY_BLOCK("PoseTracker3D::_updatePoints", profiler::colors::Navy);
 
   //ds buffer current pose
   const TransformMatrix3D& robot_to_world = frame_->robotToWorld();
@@ -530,6 +544,7 @@ void PoseTracker3D::_updatePoints(WorldMap* context_, Frame* frame_) {
   }
   frame_->temporaryPoints().resize(number_of_temporary_points);
   LOG_DEBUG(std::cerr << "PoseTracker3D::_updatePoints|updated temporary points: " << frame_->temporaryPoints().size() << std::endl)
+  EASY_END_BLOCK;
   CHRONOMETER_STOP(landmark_optimization)
 }
 

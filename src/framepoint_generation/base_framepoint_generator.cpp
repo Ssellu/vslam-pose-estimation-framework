@@ -1,7 +1,7 @@
 #include "base_framepoint_generator.h"
 
 namespace proslam {
- 
+
 Detector::Detector(){}
 Detector::~Detector(){}
 
@@ -29,7 +29,7 @@ AkazeDetector::AkazeDetector() : Detector(){
   extractor = cv::AKAZE::create();
 }
 AkazeDetector::AkazeDetector(const double _threshold) : Detector(){
-  // int descriptor_type=AKAZE::DESCRIPTOR_MLDB, int descriptor_size=0, int descriptor_channels=3, 
+  // int descriptor_type=AKAZE::DESCRIPTOR_MLDB, int descriptor_size=0, int descriptor_channels=3,
   // float threshold=0.001f, int nOctaves=4, int nOctaveLayers=4, int diffusivity=KAZE::DIFF_PM_G2
   extractor = cv::AKAZE::create(cv::AKAZE::DESCRIPTOR_MLDB, 0, 3, _threshold/div_value);
   // extractor = cv::AKAZE::create();
@@ -74,7 +74,7 @@ KazeDetector::KazeDetector() : Detector(){
   extractor = cv::KAZE::create();
 }
 KazeDetector::KazeDetector(const double _threshold) : Detector(){
-  // bool extended=false, bool upright=false, float threshold=0.001f, int nOctaves=4, 
+  // bool extended=false, bool upright=false, float threshold=0.001f, int nOctaves=4,
   // int nOctaveLayers=4, int diffusivity=KAZE::DIFF_PM_G
   extractor = cv::KAZE::create(0, 0, _threshold/div_value);
 }
@@ -191,11 +191,11 @@ void  BaseFramePointGenerator::configure(){
       _descriptor_extractor        = cv::ORB::create();
       _parameters->descriptor_type = "ORB";
     #endif
-    
-  } 
+
+  }
   else if (_parameters->descriptor_type == "ORB") {
     _descriptor_extractor = cv::ORB::create();
-  } 
+  }
   else if (_parameters->descriptor_type == "BRISK") {
     _descriptor_extractor = cv::BRISK::create();
   }
@@ -359,10 +359,12 @@ void BaseFramePointGenerator::detectKeypoints(const cv::Mat& intensity_image_,
                                               std::vector<cv::KeyPoint>& keypoints_,
                                               const bool ignore_minimum_detector_threshold_) {
   CHRONOMETER_START(keypoint_detection)
+  EASY_BLOCK("KeypointDetection", profiler::colors::Red);
+
   //ds detect new keypoints in each image region
   for (uint32_t r = 0; r < _parameters->number_of_detectors_vertical; ++r) {
     for (uint32_t c = 0; c < _parameters->number_of_detectors_horizontal; ++c) {
-    
+
       //ds detect keypoints in current region
       std::vector<cv::KeyPoint> keypoints_per_detector(0);
       _detectors[r][c]->detect(intensity_image_(_detector_regions[r][c]), keypoints_per_detector);
@@ -424,13 +426,16 @@ void BaseFramePointGenerator::detectKeypoints(const cv::Mat& intensity_image_,
   }
   ++_number_of_detections;
   _number_of_detected_keypoints = keypoints_.size();
+  EASY_END_BLOCK;
   CHRONOMETER_STOP(keypoint_detection)
 }
 
 void BaseFramePointGenerator::computeDescriptors(const cv::Mat& intensity_image_, std::vector<cv::KeyPoint>& keypoints_, cv::Mat& descriptors_) {
   CHRONOMETER_START(descriptor_extraction)
+  EASY_BLOCK("DescriptorExtraction", profiler::colors::Orange);
   _descriptor_extractor->compute(intensity_image_, keypoints_, descriptors_);
   std::cout << "descriptor size" << descriptors_.size() << std::endl;
+  EASY_END_BLOCK;
   CHRONOMETER_STOP(descriptor_extraction)
 }
 

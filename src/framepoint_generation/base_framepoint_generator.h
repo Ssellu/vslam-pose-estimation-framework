@@ -1,8 +1,10 @@
 #pragma once
+#include <easy/profiler.h>
+
 #include "types/frame.h"
 #include "intensity_feature_matcher.h"
 
-
+#define USING_EASY_PROFILER
 
 namespace proslam {
 
