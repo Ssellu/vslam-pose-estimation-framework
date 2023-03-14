@@ -115,7 +115,7 @@ int32_t main(int32_t argc_, char** argv_)
 
     // End easy_profiler
     EASY_END_BLOCK
-    profiler::dumpBlocksToFile("/home/catkin_ws/test_result/test_profile.prof");
+    profiler::dumpBlocksToFile("test_profile.prof");
     std::cerr << DOUBLE_BAR << std::endl;
     std::cerr << "main|Dump blocks..." << std::endl;
     std::cerr << DOUBLE_BAR << std::endl;
