@@ -36,11 +36,6 @@ RUN cd /home/catkin_ws &&\
     echo "export ROS_MASTER_URI=http://localhost:11311" >> /home/.bashrc && \
     . /home/.bashrc
 
-RUN cd /home/catkin_ws/src && git clone https://github.com/yse/easy_profiler.git && cd easy_profiler && mkdir build install && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install .. &&\
-    make -j4 &&\
-    sudo make install
-
 RUN . /opt/ros/kinetic/setup.sh &&\
     cd /home/catkin_ws &&\
     catkin_make -DGIT_TAG=20200410_git
