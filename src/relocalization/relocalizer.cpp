@@ -14,7 +14,19 @@ void Relocalizer::configure() {
   clear();
 
   //ds allocate and configure aligner unit
-  _aligner = XYZAlignerPtr(new XYZAligner(_parameters->aligner));
+  // _aligner = XYZAlignerPtr(new XYZAligner(_parameters->aligner));
+  // Add - Backend
+  if (_parameters->aligner_type == "ICP")
+    _aligner = XYZAlignerPtr(new XYZAligner(_parameters->aligner));
+  else if (_parameters->aligner_type == "FAST-ICP")
+    _aligner = FastAlignerPtr(new FastAligner(_parameters->aligner));
+  else{
+    _parameters->aligner_type = "ICP";
+    LOG_INFO(std::cerr << "Relocalizer::aligner type | invalid aligner_type, force to use ICP" << std::endl)
+    _aligner = XYZAlignerPtr(new XYZAligner(_parameters->aligner));
+  }   
+  LOG_INFO(std::cerr << "Relocalizer::aligner type | " << _parameters->aligner_type << std::endl)
+  
   _aligner->configure();
   LOG_INFO(std::cerr << "Relocalizer::configure|configured" << std::endl)
 }
@@ -29,8 +41,6 @@ Relocalizer::~Relocalizer() {
 //ds retrieve loop closure candidates for the given cloud
 void Relocalizer::detectClosures(LocalMap* local_map_query_) {
   CHRONOMETER_START(overall)
-  EASY_BLOCK("Relocalizer::detectClosures", profiler::colors::Purple);
-
   if (!local_map_query_) {
     return;
   }
@@ -157,28 +167,21 @@ void Relocalizer::detectClosures(LocalMap* local_map_query_) {
                         << " (" << static_cast<real>(merges.size())/number_of_query_matchables << ")" << std::endl)
   }
 #endif
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(overall)
 }
 
 //ds geometric verification and determination of spatial relation between a set of closures
 void Relocalizer::registerClosures() {
   CHRONOMETER_START(overall)
-  EASY_BLOCK("Relocalizer::registerClosures", profiler::colors::Pink);
-
   for(Closure* closure: _closures) {
     _aligner->initialize(closure);
     _aligner->converge();
   }
-
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(overall)
 }
 
 void Relocalizer::prune() {
   CHRONOMETER_START(overall)
-  EASY_BLOCK("Relocalizer::prune", profiler::colors::Pink);
-
   Closure* closure_best = nullptr;
   for(Closure* closure: _closures) {
     if (closure->is_valid) {
@@ -206,20 +209,16 @@ void Relocalizer::prune() {
   if (closure_best) {
     _closures.push_back(closure_best);
   }
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(overall)
 }
 
 void Relocalizer::clear() {
   CHRONOMETER_START(overall)
-  EASY_BLOCK("Relocalizer::clear()", profiler::colors::Pink);
-
   for(const Closure* closure: _closures) {
     delete closure;
   }
   _closures.clear();
   _mask_id_references_for_correspondences.clear();
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(overall)
 }
 

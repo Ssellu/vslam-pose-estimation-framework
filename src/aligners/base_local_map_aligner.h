@@ -33,4 +33,6 @@ protected:
   //ds objective
   TransformMatrix3D _current_to_reference = TransformMatrix3D::Identity();
 };
+
+typedef std::shared_ptr<BaseLocalMapAligner> AlignerPtr;
 }

@@ -7,5 +7,4 @@ target_link_libraries(srrg_proslam_slam_assembly_library
   srrg_proslam_visualization_library
   srrg_messages_library
   srrg_system_utils_library
-  ${EASY_PROFILER_LIBS}
 )

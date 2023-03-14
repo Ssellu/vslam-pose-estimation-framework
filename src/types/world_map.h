@@ -1,10 +1,5 @@
 #pragma once
-
-#include <easy/profiler.h>
-
 #include "local_map.h"
-
-#define USING_EASY_PROFILER
 
 namespace proslam {
 
