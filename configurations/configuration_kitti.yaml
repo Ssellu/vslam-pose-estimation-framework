@@ -1,38 +1,35 @@
 command_line:
-
   #ds processing mode (select one: RGB_STEREO, RGB_DEPTH)
   tracker_mode: RGB_STEREO
 
   #ds topic names
-  topic_image_left:        /camera_left/image_raw
-  topic_image_right:       /camera_right/image_raw
-  topic_camera_info_left:  /camera_left/camera_info
+  topic_image_left: /camera_left/image_raw
+  topic_image_right: /camera_right/image_raw
+  topic_camera_info_left: /camera_left/camera_info
   topic_camera_info_right: /camera_right/camera_info
 
   #ds dataset file name
   dataset_file_name:
 
   #ds options
-  option_use_gui:                   false
-  option_use_odometry:              false
-  option_disable_relocalization:    false
-  option_show_top_viewer:           false
-  option_drop_framepoints:          false
-  option_equalize_histogram:        false
-  option_recover_landmarks:         true
+  option_use_gui: false
+  option_use_odometry: false
+  option_disable_relocalization: false
+  option_show_top_viewer: false
+  option_drop_framepoints: false
+  option_equalize_histogram: false
+  option_recover_landmarks: true
   option_disable_bundle_adjustment: true
-  option_save_pose_graph:           false
+  option_save_pose_graph: false
 
   #topic synchronization
-  maximum_time_interval_seconds:    0.001
+  maximum_time_interval_seconds: 0.01
 
 landmark:
-
   #ds maximum measured distance kernel for landmark optimization
-  maximum_error_squared_meters: 25
+  maximum_error_squared_meters: 100
 
 local_map:
-
   #ds target minimum number of landmarks for local map creation
   minimum_number_of_landmarks: 50
 
@@ -40,11 +37,10 @@ local_map:
   maximum_number_of_landmarks: 1000
 
 world_map:
-
   #ds key frame generation properties
-  minimum_distance_traveled_for_local_map: 0.5
-  minimum_degrees_rotated_for_local_map:   0.5
-  minimum_number_of_frames_for_local_map:  4
+  minimum_distance_traveled_for_local_map: 1.0
+  minimum_degrees_rotated_for_local_map: 0.5
+  minimum_number_of_frames_for_local_map: 4
 
 base_framepoint_generation:
   # FAST: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
@@ -60,11 +56,11 @@ base_framepoint_generation:
 
   #ds dynamic thresholds for feature detection
   target_number_of_keypoints_tolerance: 0.1
-  detector_threshold_maximum_change:    0.1
-  detector_threshold_minimum:           20
-  detector_threshold_maximum:           100
-  number_of_detectors_vertical:         1
-  number_of_detectors_horizontal:       1
+  detector_threshold_maximum_change: 0.1
+  detector_threshold_minimum: 20
+  detector_threshold_maximum: 100
+  number_of_detectors_vertical: 1
+  number_of_detectors_horizontal: 1
 
   #point tracking thresholds
   minimum_projection_tracking_distance_pixels: 15
@@ -76,22 +72,33 @@ base_framepoint_generation:
 
   #rigid stereo sensor configuration
   maximum_reliable_depth_meters: 15
-  maximum_depth_meters:          1000
-  minimum_depth_meters:          0.1
+  maximum_depth_meters: 1000
+  minimum_depth_meters: 0.1
 
   #feature density regularization
   enable_keypoint_binning: true
-  bin_size_pixels:         15
+  bin_size_pixels: 15
 
 stereo_framepoint_generation:
-
   #ds stereo: triangulation
   maximum_matching_distance_triangulation: 51.2
-  minimum_disparity_pixels:                1
-  maximum_epipolar_search_offset_pixels:   0
+  minimum_disparity_pixels: 1
+  maximum_epipolar_search_offset_pixels: 0
+
+  #///////
+  # stereo : matching
+  use_matches: true
+  # matching type (FLANNBASED, BRUTEFORCE, BRUTEFORCE_L1,  BRUTEFORCE_HAMMING, BRUTEFORCE_HAMMING_GLUT,  BRUTEFORCE_SL2)
+  matching_type: FLANNBASED
+  # Homography or Not
+  matching_disable_findhomography: false
+  findhomography_method: LMEDS
+  maximum_confidence: 0.99
+  maximum_ransac_reproject: 1
+  maximum_iters: 1000
+  #////////
 
 tracking:
-
   #ds this criteria is used for the decision of whether creating a landmark or not from a track of framepoints
   minimum_track_length_for_landmark_creation: 1
 
@@ -99,7 +106,7 @@ tracking:
   minimum_number_of_landmarks_to_track: 5
 
   #point tracking thresholds
-  tunnel_vision_ratio: 0.75
+  tunnel_vision_ratio: 0.5
   good_tracking_ratio: 0.2
 
   #landmark track recovery (if enabled)
@@ -109,45 +116,43 @@ tracking:
   motion_model: CONSTANT_VELOCITY
 
   #pose optimization
-  minimum_delta_angular_for_movement:       0.001
+  minimum_delta_angular_for_movement: 0.001
   minimum_delta_translational_for_movement: 0.01
 
   #pose optimization: aligner unit configuration
-  aligner->error_delta_for_convergence:  1e-3
-  aligner->maximum_error_kernel:         10
-  aligner->damping:                      6
+  aligner->error_delta_for_convergence: 1e-3
+  aligner->maximum_error_kernel: 4
+  aligner->damping: 5
   aligner->maximum_number_of_iterations: 1000
-  aligner->minimum_number_of_inliers:    10
-  aligner->minimum_inlier_ratio:         0
+  aligner->minimum_number_of_inliers: 100
+  aligner->minimum_inlier_ratio: 0
   aligner->enable_inverse_depth_as_information: true
 
 relocalization:
-
   #maximum permitted descriptor distance to still be considered as a match
-  maximum_descriptor_distance: 25.6
+  maximum_descriptor_distance: 25
 
   #minimum query interspace
-  preliminary_minimum_interspace_queries: 10
+  preliminary_minimum_interspace_queries: 50
 
   #minimum relative number of matches
-  preliminary_minimum_matching_ratio: 0.1
+  preliminary_minimum_matching_ratio: 0.05
 
   #minimum absolute number of matches
-  minimum_number_of_matched_landmarks: 50
+  minimum_number_of_matched_landmarks: 25
 
   #correspondence retrieval
   minimum_matches_per_correspondence: 0
 
   #icp: aligner unit configuration
-  aligner->error_delta_for_convergence:  1e-5
-  aligner->maximum_error_kernel:         10
-  aligner->damping:                      0.0
-  aligner->maximum_number_of_iterations: 1000
-  aligner->minimum_number_of_inliers:    100
-  aligner->minimum_inlier_ratio:         0.5
+  aligner->error_delta_for_convergence: 1e-5
+  aligner->maximum_error_kernel: 1.0
+  aligner->damping: 0.0
+  aligner->maximum_number_of_iterations: 100
+  aligner->minimum_number_of_inliers: 10
+  aligner->minimum_inlier_ratio: 0.5
 
 graph_optimization:
-
   #enable full bundle adjustment (default: only pose graph optimization upon loop closing)
   enable_full_bundle_adjustment: false
 
@@ -161,7 +166,7 @@ graph_optimization:
   identifier_space: 1e9
 
   #maximum number of iterations graph optimization TODO proper termination criterion for GAUSS_NEWTON
-  maximum_number_of_iterations: 100
+  maximum_number_of_iterations: 10
 
   #determines window size for bundle adjustment
   number_of_frames_per_bundle_adjustment: 100
@@ -185,10 +190,8 @@ graph_optimization:
   minimum_estimation_delta_for_update_meters: 0.01
 
 visualization:
-
   #follow robot in 3D map/trajectory viewer
   follow_robot: true
 
   #show secondary image
   display_secondary_image: false
-

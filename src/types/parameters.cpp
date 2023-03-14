@@ -323,6 +323,18 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_matching_distance_triangulation, int32_t)
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, minimum_disparity_pixels, real)
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_epipolar_search_offset_pixels, int32_t)
+        
+                
+        ///////
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, use_matches, bool)
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, matching_type, std::string)
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, matching_disable_findhomography, bool)
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, findhomography_method, std::string)
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_confidence, real)
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_iters, int32_t)
+        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_ransac_reproject, int32_t)
+        ////////
+        
         break;
       }
       case CommandLineParameters::TrackerMode::RGB_DEPTH: {
