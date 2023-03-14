@@ -66,7 +66,7 @@ RUN echo "== Install ProSLAM Prerequisites == " && \
 RUN apt-get install libssl-dev -y
 RUN apt-get install python-catkin-tools -y
 
-RUN echo " == Eigen Version Update ==" && \
+RUN echo "== Eigen Version Update ==" && \
     cd /home && \
     curl http://security.ubuntu.com/ubuntu/pool/universe/e/eigen3/libeigen3-dev_3.3.4-4_all.deb -o libeigen3-dev_3.3.4-4_all.deb && dpkg -i libeigen3-dev_3.3.4-4_all.deb
 
