@@ -4,7 +4,7 @@ on:
 
 jobs:
   Build:
-    name: Build Essentialsdd
+    name: Build Essentials
     runs-on: self-hosted
     steps:
       - name: Build - Build Base Docker Image
@@ -12,13 +12,5 @@ jobs:
           echo "=== Build start ==="   
           echo ssellu | sudo -S echo ""
           cd dockerfiles
-          sudo docker build --force-rm -t "test:1.0" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
+          sudo docker build --no-cache --force-rm -t "test:1.0" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
           echo "=== Build finished ==="
-
-      - name: Copy - Copy Dataset
-        run: |
-          echo "=== Copy start ==="   
-          echo ssellu | sudo -S echo ""
-          cd dockerfiles
-          sudo docker build --force-rm -t "test:1.1" --build-arg BRANCH=${{ github.head_ref }} . -f d2.load-data.dockerfile
-          echo "=== Copy finished ==="
