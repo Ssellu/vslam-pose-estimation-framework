@@ -1,6 +1,5 @@
 #include "stereo_framepoint_generator.h"
 #include "types/landmark.h"
-
 namespace proslam {
 
 StereoFramePointGenerator::StereoFramePointGenerator(StereoFramePointGeneratorParameters* parameters_): BaseFramePointGenerator(parameters_),
@@ -96,9 +95,8 @@ void StereoFramePointGenerator::initialize(Frame* frame_, const bool& extract_fe
 }
 
 void StereoFramePointGenerator::compute(Frame* frame_) {
-  CHRONOMETER_START(point_triangulation)
-  EASY_BLOCK("StereoMatching", profiler::colors::Yellow);
 
+  CHRONOMETER_START(point_triangulation)
   if (!frame_) {
     throw std::runtime_error("StereoFramePointGenerator::compute|called with empty frame");
   }
@@ -123,7 +121,6 @@ void StereoFramePointGenerator::compute(Frame* frame_) {
   Count number_of_new_points = 0;
 
   //////////
-
   if (_parameters->use_matches)
   {
     cv::Ptr<cv::DescriptorMatcher> matcher;
@@ -214,7 +211,6 @@ void StereoFramePointGenerator::compute(Frame* frame_) {
   }
 
   //////////
-
   //ds start stereo matching for all epipolar offsets
   for (const int32_t& epipolar_offset: _epipolar_search_offsets_pixel) {
     IntensityFeaturePointerVector& features_left(_feature_matcher_left.feature_vector);
@@ -275,6 +271,15 @@ void StereoFramePointGenerator::compute(Frame* frame_) {
           continue;
         }
 
+        /*
+        for (int idx = 0; idx < int(left_good_points.size()); idx++) {
+                    if (feature_left->keypoint.pt.x != left_good_points[idx].x || feature_left->keypoint.pt.y != left_good_points[idx].y) {
+                        if (feature_right->keypoint.pt.x != right_good_points[idx].x || feature_right->keypoint.pt.y != right_good_points[idx].y) {
+                            continue;
+                        }
+                    }
+                }
+        */
         //ds compute a new framepoint without track
         FramePoint* framepoint = frame_->createFramepoint(feature_left,
                                                           feature_right,
@@ -355,7 +360,6 @@ void StereoFramePointGenerator::compute(Frame* frame_) {
     //ds add all points to frame
     framepoints.insert(framepoints.end(), framepoints_new.begin(), framepoints_new.end());
   }
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(point_triangulation)
 }
 
