@@ -8,10 +8,23 @@
   linear_solver->setBlockOrdering(true); \
   std::unique_ptr<BLOCK_TYPE_> block_solver = g2o::make_unique<BLOCK_TYPE_>(std::move(linear_solver)); \
   solver = new OPTIMIZATION_ALGORITHM_(std::move(block_solver));
+// Add - Backend
+#define ALLOCATE_SOLVER_NO(OPTIMIZATION_ALGORITHM_, SOLVER_TYPE_, BLOCK_TYPE_) \
+  std::unique_ptr<SOLVER_TYPE_> linear_solver = g2o::make_unique<SOLVER_TYPE_>(); \
+  std::unique_ptr<BLOCK_TYPE_> block_solver = g2o::make_unique<BLOCK_TYPE_>(std::move(linear_solver)); \
+  solver = new OPTIMIZATION_ALGORITHM_(std::move(block_solver));
 #else
 #define ALLOCATE_SOLVER(OPTIMIZATION_ALGORITHM_, SOLVER_TYPE_, BLOCK_TYPE_) \
   SOLVER_TYPE_* linear_solver = new SOLVER_TYPE_(); \
+// Add - Backend
+  if (SOLVER_TYPE_ == "DENSE") ?  : linear_solver->setBlockOrdering(true) \
   linear_solver->setBlockOrdering(true); \
+  BLOCK_TYPE_* block_solver = new BLOCK_TYPE_(linear_solver); \
+  solver = new OPTIMIZATION_ALGORITHM_(block_solver);
+// Add - Backend
+#define ALLOCATE_SOLVER_NO(OPTIMIZATION_ALGORITHM_, SOLVER_TYPE_, BLOCK_TYPE_) \
+  SOLVER_TYPE_* linear_solver = new SOLVER_TYPE_(); \
+  if (SOLVER_TYPE_ == "DENSE") ?  : linear_solver->setBlockOrdering(true) \
   BLOCK_TYPE_* block_solver = new BLOCK_TYPE_(linear_solver); \
   solver = new OPTIMIZATION_ALGORITHM_(block_solver);
 #endif
@@ -41,6 +54,12 @@ void GraphOptimizer::configure() {
       !_parameters->enable_full_bundle_adjustment) {
     ALLOCATE_SOLVER(OptimizerGaussNewton, LinearSolverCSparse6x3, BlockSolver6x3)
   }
+  // Add - Backend
+  else if (_parameters->optimization_algorithm == "GAUSS_NEWTON" &&
+      _parameters->linear_solver_type == "DENSE" &&
+      !_parameters->enable_full_bundle_adjustment) {
+    ALLOCATE_SOLVER_NO(OptimizerGaussNewton, LinearSolverDense6x3, BlockSolver6x3)
+  }
 
   else if (_parameters->optimization_algorithm == "GAUSS_NEWTON" &&
       _parameters->linear_solver_type == "CHOLMOD" &&
@@ -63,6 +82,12 @@ void GraphOptimizer::configure() {
       !_parameters->enable_full_bundle_adjustment) {
     ALLOCATE_SOLVER(OptimizerLevenberg, LinearSolverCSparse6x3, BlockSolver6x3)
   }
+  // Add - Backend
+  else if (_parameters->optimization_algorithm == "LEVENBERG" &&
+      _parameters->linear_solver_type == "DENSE" &&
+      !_parameters->enable_full_bundle_adjustment) {
+    ALLOCATE_SOLVER_NO(OptimizerLevenberg, LinearSolverDense6x3, BlockSolver6x3)
+  }
 
   else if (_parameters->optimization_algorithm == "LEVENBERG" &&
       _parameters->linear_solver_type == "CHOLMOD" &&
@@ -73,6 +98,22 @@ void GraphOptimizer::configure() {
       _parameters->linear_solver_type == "CSPARSE" &&
       _parameters->enable_full_bundle_adjustment) {
     ALLOCATE_SOLVER(OptimizerLevenberg, LinearSolverCSparseVariable, BlockSolverVariable)
+  }
+  // Add - Backend
+  else if (_parameters->optimization_algorithm == "DOGLEG" &&
+      _parameters->linear_solver_type == "CHOLMOD" &&
+      !_parameters->enable_full_bundle_adjustment) {
+    ALLOCATE_SOLVER(OptimizerDogleg, LinearSolverCholmod6x3, BlockSolver6x3)
+  }
+  else if (_parameters->optimization_algorithm == "DOGLEG" &&
+      _parameters->linear_solver_type == "CSPARSE" &&
+      !_parameters->enable_full_bundle_adjustment) {
+    ALLOCATE_SOLVER(OptimizerDogleg, LinearSolverCSparse6x3, BlockSolver6x3)
+  }
+   else if (_parameters->optimization_algorithm == "DOGLEG" &&
+      _parameters->linear_solver_type == "DENSE" &&
+      !_parameters->enable_full_bundle_adjustment) {
+    ALLOCATE_SOLVER_NO(OptimizerDogleg, LinearSolverDense6x3, BlockSolver6x3)
   }
 
   //ds if we couldn't allocate a solver
@@ -222,7 +263,6 @@ void GraphOptimizer::writePoseGraphToFile(const WorldMap* world_map_, const std:
 
 void GraphOptimizer::addPose(LocalMap* local_map_) {
   CHRONOMETER_START(addition)
-  EASY_BLOCK("PoseGraphOptimizer::addPoseGraphAdd", profiler::colors::Black);
 
   //ds get the frames pose to g2o representation
   g2o::VertexSE3* vertex_current = new g2o::VertexSE3();
@@ -271,14 +311,11 @@ void GraphOptimizer::addPose(LocalMap* local_map_) {
 
   //ds bookkeep the added frame
   _vertex_local_map_last_added = vertex_current;
-
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(addition)
 }
 
 void GraphOptimizer::addPoseWithFactors(Frame* frame_) {
   CHRONOMETER_START(addition)
-  EASY_BLOCK("GraphOptimizer::addPoseWithFactors", profiler::colors::Black);
 
   //ds get the frames pose to g2o representation
   g2o::VertexSE3* vertex_frame_current = new g2o::VertexSE3();
@@ -364,14 +401,11 @@ void GraphOptimizer::addPoseWithFactors(Frame* frame_) {
   //ds bookkeep the added frame
   _vertex_local_map_last_added = vertex_frame_current;
   _frames_in_pose_graph.insert(std::make_pair(frame_, vertex_frame_current));
-
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(addition)
 }
 
 void GraphOptimizer::optimizePoseGraph(WorldMap* world_map_) {
   CHRONOMETER_START(optimization)
-  EASY_BLOCK("GraphOptimizer::optimizePoseGraph", profiler::colors::White);
 
 //  //ds save current graph to file
 //  const std::string file_name = "pose_graph_"+std::to_string(world_map_->currentFrame()->identifier())+".g2o";
@@ -413,14 +447,11 @@ void GraphOptimizer::optimizePoseGraph(WorldMap* world_map_) {
   //ds move current head to the new optimized position
   world_map_->setRobotToWorld(world_map_->currentFrame()->robotToWorld());
   ++_number_of_optimizations;
-
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(optimization)
 }
 
 void GraphOptimizer::optimizeFactorGraph(WorldMap* world_map_) {
   CHRONOMETER_START(optimization)
-  EASY_BLOCK("GraphOptimizer::optimizeFactorGraph", profiler::colors::White);
 
 //  //ds save current graph to file
 //  const std::string file_name = "pose_graph_"+std::to_string(world_map_->currentFrame()->identifier())+".g2o";
@@ -445,8 +476,6 @@ void GraphOptimizer::optimizeFactorGraph(WorldMap* world_map_) {
   _vertex_local_map_last_added = 0;
   _frames_in_pose_graph.clear();
   _landmarks_in_pose_graph.clear();
-
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(optimization)
 }
 

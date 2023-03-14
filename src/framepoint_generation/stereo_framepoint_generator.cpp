@@ -97,8 +97,6 @@ void StereoFramePointGenerator::initialize(Frame* frame_, const bool& extract_fe
 
 void StereoFramePointGenerator::compute(Frame* frame_) {
   CHRONOMETER_START(point_triangulation)
-  EASY_BLOCK("StereoMatching", profiler::colors::Yellow);
-
   if (!frame_) {
     throw std::runtime_error("StereoFramePointGenerator::compute|called with empty frame");
   }
@@ -121,99 +119,6 @@ void StereoFramePointGenerator::compute(Frame* frame_) {
   //ds new framepoints - optionally filtered in a consecutive binning
   FramePointPointerVector framepoints_new(_number_of_detected_keypoints);
   Count number_of_new_points = 0;
-
-  //////////
-
-  if (_parameters->use_matches)
-  {
-    cv::Ptr<cv::DescriptorMatcher> matcher;
-    std::vector<std::vector<cv::DMatch>> matches;
-    std::vector<std::vector<cv::DMatch>> bf_matches;
-    std::vector<cv::Point2d> left_good_points;
-    std::vector<cv::Point2d> right_good_points;
-
-    if (_parameters->matching_type == "FLANNBASED")
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
-    else if (_parameters->matching_type == "BRUTEFORCE")
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
-    else if (_parameters->matching_type == "BRUTEFORCE_L1")
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE_L1);
-    else if (_parameters->matching_type == "BRUTEFORCE_HAMMING")
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE_HAMMING);
-    else if (_parameters->matching_type == "BRUTEFORCE_HAMMING_GLUT")
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE_HAMMINGLUT);
-    else if (_parameters->matching_type == "BRUTEFORCE_SL2")
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE_SL2);
-    else {
-        std::cout << "Not found method" << '\n';
-        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
-    }
-
-    cv::Mat temp_des1, temp_des2;
-    if(frame_->descriptorsLeft().type()!=CV_32F) {
-        frame_->descriptorsLeft().convertTo(temp_des1, CV_32F);
-    }
-    if(frame_->descriptorsRight().type()!=CV_32F) {
-        frame_->descriptorsRight().convertTo(temp_des2, CV_32F);
-    }
-    matcher->knnMatch(temp_des1, temp_des2, bf_matches, 2);
-
-    if (_parameters->matching_disable_findhomography) {
-        //ds Lowe's ratio test, delete false matcher
-        const float ratio_thresh = 0.7f;
-        std::vector<cv::DMatch> good_matches;
-        for (size_t i = 0; i < matches.size(); i++) {
-            if (matches[i][0].distance < ratio_thresh * matches[i][1].distance) {
-                good_matches.push_back(matches[i][0]);
-            }
-        }
-
-        for (std::vector<cv::DMatch>::const_iterator it= good_matches.begin(); it != good_matches.end(); ++it) {
-            left_good_points.push_back(frame_->keypointsLeft()[it->queryIdx].pt);
-            right_good_points.push_back(frame_->keypointsRight()[it->trainIdx].pt);
-        }
-    }
-    else {
-        std::vector<cv::DMatch> good_matches;
-        for (size_t i = 0; i < bf_matches.size(); i++) {
-            good_matches.push_back(bf_matches[i][0]);
-        }
-
-        std::vector<cv::Point2d> before_left_good_points;
-        std::vector<cv::Point2d> before_right_good_points;
-
-        for (std::vector<cv::DMatch>::const_iterator it= good_matches.begin(); it != good_matches.end(); ++it) {
-            before_left_good_points.push_back(frame_->keypointsLeft()[it->queryIdx].pt);
-            before_right_good_points.push_back(frame_->keypointsRight()[it->trainIdx].pt);
-        }
-
-        cv::Mat mask, H, mask2, F;
-
-        if (_parameters->findhomography_method == "RANSAC")
-            H = cv::findHomography(before_left_good_points, before_right_good_points, cv::RANSAC,
-                                   _parameters->maximum_ransac_reproject, mask, _parameters->maximum_iters, _parameters->maximum_confidence);
-        else if (_parameters->findhomography_method == "RHO")
-            H = cv::findHomography(before_left_good_points, before_right_good_points, cv::RHO,
-                                   _parameters->maximum_ransac_reproject, mask, _parameters->maximum_iters, _parameters->maximum_confidence);
-        else if (_parameters->findhomography_method == "LMEDS")
-            H = cv::findHomography(before_left_good_points, before_right_good_points, cv::LMEDS,
-                                   _parameters->maximum_ransac_reproject, mask, _parameters->maximum_iters, _parameters->maximum_confidence);
-        else {
-            std::cout << "Not detected find-homography method! - RANSAC use!" << '\n';
-            H = cv::findHomography(before_left_good_points, before_right_good_points, cv::RANSAC,
-                                   _parameters->maximum_ransac_reproject, mask, _parameters->maximum_iters, _parameters->maximum_confidence);
-        }
-
-        for (int i = 0; i < int(mask.size().area()); i++) {
-            if (mask.at<uchar>(i, 0) != '0') {
-                left_good_points.push_back(before_left_good_points[i]);
-                right_good_points.push_back(before_right_good_points[i]);
-            }
-        }
-    }
-  }
-
-  //////////
 
   //ds start stereo matching for all epipolar offsets
   for (const int32_t& epipolar_offset: _epipolar_search_offsets_pixel) {
@@ -355,7 +260,6 @@ void StereoFramePointGenerator::compute(Frame* frame_) {
     //ds add all points to frame
     framepoints.insert(framepoints.end(), framepoints_new.begin(), framepoints_new.end());
   }
-  EASY_END_BLOCK;
   CHRONOMETER_STOP(point_triangulation)
 }
 

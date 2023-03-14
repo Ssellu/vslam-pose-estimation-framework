@@ -8,9 +8,11 @@
 #include "g2o/core/optimization_algorithm_factory.h"
 #include "g2o/solvers/csparse/linear_solver_csparse.h"
 #include "g2o/solvers/cholmod/linear_solver_cholmod.h"
+#include "g2o/solvers/dense/linear_solver_dense.h"
 #include "g2o/types/slam3d/types_slam3d.h"
 #include "g2o/core/optimization_algorithm_gauss_newton.h"
 #include "g2o/core/optimization_algorithm_levenberg.h"
+#include "g2o/core/optimization_algorithm_dogleg.h"
 
 //ds proslam
 #include "types/world_map.h"
@@ -31,12 +33,15 @@ public:
   //ds available solvers
   typedef g2o::LinearSolverCSparse<BlockSolverVariable::PoseMatrixType> LinearSolverCSparseVariable;
   typedef g2o::LinearSolverCholmod<BlockSolverVariable::PoseMatrixType> LinearSolverCholmodVariable;
+  typedef g2o::LinearSolverDense<BlockSolverVariable::PoseMatrixType> LinearSolverDenseVariable;
   typedef g2o::LinearSolverCSparse<BlockSolver6x3::PoseMatrixType> LinearSolverCSparse6x3;
   typedef g2o::LinearSolverCholmod<BlockSolver6x3::PoseMatrixType> LinearSolverCholmod6x3;
+  typedef g2o::LinearSolverDense<BlockSolver6x3::PoseMatrixType> LinearSolverDense6x3;
 
   //ds available optimization algorithm
   typedef g2o::OptimizationAlgorithmGaussNewton OptimizerGaussNewton;
   typedef g2o::OptimizationAlgorithmLevenberg OptimizerLevenberg;
+  typedef g2o::OptimizationAlgorithmLevenberg OptimizerDogleg;
 
   //! @brief g2o parameter identifiers
   enum G2oParameter {

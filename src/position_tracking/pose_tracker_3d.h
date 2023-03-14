@@ -1,12 +1,7 @@
 #pragma once
-
-#include <easy/profiler.h>
-
 #include "framepoint_generation/base_framepoint_generator.h"
 #include "aligners/base_frame_aligner.h"
 #include "types/world_map.h"
-
-#define USING_EASY_PROFILER
 
 namespace proslam {
 

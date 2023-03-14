@@ -18,6 +18,7 @@
   #error OpenCV version not supported
 #endif
 
+#define EIGEN_ALIGNMENT Eigen::AutoAlign
 #include "srrg_system_utils/system_utils.h"
 #include "srrg_types/types.hpp"
 
@@ -90,6 +91,33 @@ namespace proslam {
   typedef Eigen::Matrix<real, 6, 4> Matrix6_4;
   typedef Eigen::Matrix<real, 3, 4> Matrix3_4;
   typedef Eigen::Matrix<real, 4, 3> Matrix4_3;
+
+  typedef double Scalar;
+  typedef TransformMatrix3D AffineNd;
+  typedef Eigen::Matrix<Scalar, 3+1, 3+1> AffineMatrixN;
+  typedef Eigen::Matrix<Scalar, 3, 3> MatrixNN;
+  typedef Eigen::Matrix<Scalar, 3, Eigen::Dynamic> MatrixNX;
+  typedef Eigen::Matrix<Scalar, 3, Eigen::Dynamic> Vertices;
+  typedef Eigen::Matrix<Scalar, 3, 1> VectorN;
+
+  template < int Rows, int Cols, int Options = (Eigen::ColMajor | EIGEN_ALIGNMENT) >
+  using MatrixT = Eigen::Matrix<Scalar, Rows, Cols, Options>; ///< A typedef of the dense matrix of Eigen.
+  //typedef MatrixT<2, 1> Vector2;								///< A 2d column vector.
+  typedef MatrixT<2, 2> Matrix22;								///< A 2 by 2 matrix.
+  typedef MatrixT<2, 3> Matrix23;								///< A 2 by 3 matrix.
+  //typedef MatrixT<3, 1> Vector3;								///< A 3d column vector.
+  typedef MatrixT<3, 2> Matrix32;								///< A 3 by 2 matrix.
+  typedef MatrixT<3, 3> Matrix33;								///< A 3 by 3 matrix.
+  typedef MatrixT<3, 4> Matrix34;								///< A 3 by 4 matrix.
+  //typedef MatrixT<4, 1> Vector4;								///< A 4d column vector.
+  typedef MatrixT<4, 4> Matrix44;								///< A 4 by 4 matrix.
+  typedef MatrixT<4, Eigen::Dynamic> Matrix4X;				///< A 4 by n matrix.
+  typedef MatrixT<3, Eigen::Dynamic> Matrix3X;				///< A 3 by n matrix.
+  typedef MatrixT<Eigen::Dynamic, 3> MatrixX3;				///< A n by 3 matrix.
+  typedef MatrixT<2, Eigen::Dynamic> Matrix2X;				///< A 2 by n matrix.
+  typedef MatrixT<Eigen::Dynamic, 2> MatrixX2;				///< A n by 2 matrix.
+  typedef MatrixT<Eigen::Dynamic, 1> VectorX;					///< A nd column vector.
+  typedef Eigen::Matrix<Scalar, 3, 1> VectorN;
 
   //ds cv colors
   #define CV_COLOR_CODE_RANDOM cv::Scalar(rand()%255, rand()%255, rand()%255)

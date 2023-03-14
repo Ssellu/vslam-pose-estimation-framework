@@ -323,18 +323,6 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_matching_distance_triangulation, int32_t)
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, minimum_disparity_pixels, real)
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_epipolar_search_offset_pixels, int32_t)
-        
-                
-        ///////
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, use_matches, bool)
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, matching_type, std::string)
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, matching_disable_findhomography, bool)
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, findhomography_method, std::string)
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_confidence, real)
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_iters, int32_t)
-        PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_ransac_reproject, int32_t)
-        ////////
-        
         break;
       }
       case CommandLineParameters::TrackerMode::RGB_DEPTH: {
@@ -353,7 +341,6 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
     }
 
     //FramepointGeneration (GENERIC)
-    PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, detector_type, std::string)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, descriptor_type, std::string)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, target_number_of_keypoints_tolerance, real)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, detector_threshold_minimum, int32_t)
@@ -408,6 +395,8 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
     PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, preliminary_minimum_matching_ratio, real)
     PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, minimum_number_of_matched_landmarks, Count)
     PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, minimum_matches_per_correspondence, Count)
+    // Add - Backend
+    PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, aligner_type, std::string)
     PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, aligner->error_delta_for_convergence, real)
     PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, aligner->maximum_error_kernel, real)
     PARSE_PARAMETER(configuration, relocalization, relocalizer_parameters, aligner->damping, real)
