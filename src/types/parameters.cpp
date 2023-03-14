@@ -324,6 +324,7 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, minimum_disparity_pixels, real)
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, maximum_epipolar_search_offset_pixels, int32_t)
         
+                
         ///////
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, use_matches, bool)
         PARSE_PARAMETER(configuration, stereo_framepoint_generation, stereo_framepoint_generator_parameters, matching_type, std::string)
@@ -352,6 +353,7 @@ void ParameterCollection::parseFromFile(const std::string& filename_) {
     }
 
     //FramepointGeneration (GENERIC)
+    PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, detector_type, std::string)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, descriptor_type, std::string)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, target_number_of_keypoints_tolerance, real)
     PARSE_PARAMETER(configuration, base_framepoint_generation, framepoint_generation_parameters, detector_threshold_minimum, int32_t)
