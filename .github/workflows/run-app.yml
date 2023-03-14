@@ -1,43 +1,21 @@
 name: Run
-on: workflow_dispatch
-env:
-  GET_REPO: export REPO=${GITHUB_REPOSITORY#*/}
-  GET_HASH: export HASH=${GITHUB_SHA}
+on:
+  workflow_dispatch:
 
 jobs:
-  container-test-job:
+  job1:
     runs-on: self-hosted
     container:
       image: test:1.2
-    name: Run
+    name: Pull & Rebuild
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-        
-      - name: ls
-        run: |
-          useradd -m user && yes password | passwd user 
-          ls -al
-          
       - name: Build ProSLAM
         run: |
-          eval $GET_REPO
-          eval $GET_HASH
           echo "=== Build ProSLAM ==="
           cd dockerfiles
-          sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d4.rebuild-repo.dockerfile
-      
+          sudo docker build --force-rm -t --no-cache "test:1.2" --build-arg BRANCH=${{ github.head_ref }} . -f d3.build.dockerfile
+
       - name: Run ProSLAM
         run: |
-          eval $GET_REPO
-          eval $GET_HASH
           echo "=== Run ProSLAM ==="
-          docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name d2.run-app.dockerfile ${REPO}:${HASH}
-
-      - name: If Fail - Clean up Docker image if build fails
-        if: failure()
-        run: |
-          echo "=== Clean up start ==="
-          sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
-          sudo docker images
-          echo "=== Clean up finished ==="
+          docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name d2.run-app.dockerfile "test:1.2"

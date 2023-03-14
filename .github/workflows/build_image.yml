@@ -1,25 +1,24 @@
 name: Build Docker Image
 on:
   workflow_dispatch:
-env:
-  GET_REPO: export REPO=${GITHUB_REPOSITORY#*/}
-  GET_HASH: export HASH=${GITHUB_SHA}
 
 jobs:
   Build:
-    name: Build
+    name: Build Essentialsdd
     runs-on: self-hosted
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
       - name: Build - Build Base Docker Image
         run: |
-          eval $GET_REPO
-          eval $GET_HASH
           echo "=== Build start ==="   
-          echo ssellu | sudo -S echo "ssellu"
+          echo ssellu | sudo -S echo ""
           cd dockerfiles
-          sudo docker build --force-rm -t "${REPO}:${HASH}" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
+          sudo docker build --force-rm -t "test:1.0" --build-arg BRANCH=${{ github.head_ref }} . -f d1.base.dockerfile
           echo "=== Build finished ==="
 
+      - name: Copy - Copy Dataset
+        run: |
+          echo "=== Copy start ==="   
+          echo ssellu | sudo -S echo ""
+          cd dockerfiles
+          sudo docker build --force-rm -t "test:1.1" --build-arg BRANCH=${{ github.head_ref }} . -f d2.load-data.dockerfile
+          echo "=== Copy finished ==="
