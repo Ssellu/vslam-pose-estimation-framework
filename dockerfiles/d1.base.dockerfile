@@ -107,6 +107,12 @@ RUN echo "== Install G2O == " && \
     cd /home/catkin_ws/src && \
     git clone https://github.com/yorsh87/g2o_catkin.git
 
+RUN echo "== Install EasyProfiler == " && \
+    cd /home/catkin_ws/src && git clone https://github.com/yse/easy_profiler.git && cd easy_profiler && mkdir build install && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install .. &&\
+    make -j4 &&\
+    sudo make install
+
 RUN echo "== Clone and Build Source Codes == " && \
     cd /home/catkin_ws/src && \
     git clone https://github.com/Ssellu/vslam-pose-estimation-framework.git

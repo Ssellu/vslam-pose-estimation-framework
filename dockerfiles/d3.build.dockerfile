@@ -3,7 +3,7 @@
 ##   d3.build.dockerfile
 ##
 ## [[ Build Image ]]
-##   sudo docker build --no-cache --force-rm -f d3.build.dockerfile -t test:1.2 .
+##   sudo docker build --force-rm -f d3.build.dockerfile -t test:1.2 .
 ##
 ## [[ Run Image ]]
 ##   (GUI off)
@@ -22,6 +22,10 @@ FROM test:1.1
 RUN echo "== Clone and Build Source Codes == " && \
     cd /home/catkin_ws/src/vslam-pose-estimation-framework && \
     git pull origin main
+RUN cd /home/catkin_ws/src && git clone https://github.com/yse/easy_profiler.git && cd easy_profiler && mkdir build install && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install .. &&\
+    make -j4 &&\
+    make install
 
 RUN echo "== Make ProSlam == " && \
     cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
@@ -32,9 +36,17 @@ RUN cd /home/catkin_ws &&\
     echo "export ROS_MASTER_URI=http://localhost:11311" >> /home/.bashrc && \
     . /home/.bashrc
 
+RUN cd /home/catkin_ws/src && git clone https://github.com/yse/easy_profiler.git && cd easy_profiler && mkdir build install && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install .. &&\
+    make -j4 &&\
+    sudo make install
+
 RUN . /opt/ros/kinetic/setup.sh &&\
     cd /home/catkin_ws &&\
     catkin_make -DGIT_TAG=20200410_git
 
 RUN echo ". /home/catkin_ws/devel/setup.sh" >> /home/.bashrc && \
     . /home/.bashrc
+
+RUN . /opt/ros/kinetic/setup.sh &&\
+    cd /home/catkin_ws/src/vslam-pose-estimation-framework && catkin build
