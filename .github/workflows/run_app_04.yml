@@ -1,10 +1,10 @@
-name: Run ProSLAM - Dataset 00
+name: Run ProSLAM - Dataset 04
 on:
   workflow_dispatch:
 
 jobs:
   job1:
-    name: Run ProSLAM - Dataset 00
+    name: Run ProSLAM - Dataset 04
     runs-on: self-hosted
     container:
       image: ssellu/proslam:1.0
