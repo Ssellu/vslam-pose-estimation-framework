@@ -1,0 +1,21 @@
+name: Run ProSLAM - Dataset 00
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+    runs-on: self-hosted
+    container:
+      image: test:1.2
+    name: Pull & Rebuild
+    steps:
+      - name: Build
+        run: |
+          echo "=== Build ProSLAM ==="
+          cd dockerfiles
+          sudo docker build --force-rm -t --no-cache "test:1.3.1" --build-arg . -f d4.00.run-app.dockerfile
+
+      - name: Run
+        run: |
+          echo "=== Run ProSLAM ==="
+          sudo docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name test test:1.3.1
