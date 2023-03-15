@@ -222,7 +222,6 @@ void  BaseFramePointGenerator::configure(){
     _descriptor_extractor        = cv::ORB::create();
     _parameters->descriptor_type = "ORB";
   }
-#endif
 
   //ds log chosen descriptor type and size
   LOG_INFO(std::cerr << "BaseFramePointGenerator::configure|descriptor_type: " << _parameters->descriptor_type << std::endl)
