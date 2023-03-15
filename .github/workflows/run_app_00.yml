@@ -7,7 +7,7 @@ jobs:
     name: Run ProSLAM - Dataset 00
     runs-on: self-hosted
     container:
-      image: test:1.2
+      image: ssellu/proslam:1.0
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
