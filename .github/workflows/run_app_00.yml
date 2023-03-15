@@ -12,7 +12,26 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
+      - name: Build ProSLAM
+        run: |
+          echo "=== Build ProSLAM ==="
+          ls -al /home
+          cd /home/catkin_ws/src/vslam-pose-estimation-framework
+          
+      - name: Git Checkout 
+        uses: actions/checkout@v3
+          
       - name: Build
         run: |
           echo "=== Build ProSLAM ==="
-          ls -al
+          cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
+          . /opt/ros/kinetic/setup.sh 
+          cd /home/catkin_ws 
+          catkin_make -DGIT_TAG=20200410_git
+          echo ". /home/catkin_ws/devel/setup.sh" >> /home/.bashrc
+          . /home/.bashrc
+          . /opt/ros/kinetic/setup.sh
+          cd /home/catkin_ws/src/vslam-pose-estimation-framework && catkin build
+      - name: Run App
+        run: |
+          cd /home/catkin_ws/dataset/00 && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app 00.txt -c "/home/catkin_ws/src/vslam-pose-estimation-framework/configurations/configuration_kitti.yaml"
