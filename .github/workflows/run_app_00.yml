@@ -7,18 +7,31 @@ jobs:
     name: Run ProSLAM - Dataset 00
     runs-on: self-hosted
     container:
-      image: test:1.2
+      image: ssellu/proslam:1.0
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
+      - name: Build ProSLAM
+        run: |
+          echo "=== Build ProSLAM ==="
+          ls -al /home
+          cd /home/catkin_ws/src/vslam-pose-estimation-framework
+          
+      - name: Git Checkout 
+        uses: actions/checkout@v3
+          
       - name: Build
         run: |
           echo "=== Build ProSLAM ==="
-          cd dockerfiles
-          sudo docker build --force-rm -t --no-cache "test:1.3.1" --build-arg . -f d4.00.run-app.dockerfile
-
-      - name: Run
+          cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
+          . /opt/ros/kinetic/setup.sh 
+          cd /home/catkin_ws 
+          catkin_make -DGIT_TAG=20200410_git
+          echo ". /home/catkin_ws/devel/setup.sh" >> /home/.bashrc
+          . /home/.bashrc
+          . /opt/ros/kinetic/setup.sh
+          cd /home/catkin_ws/src/vslam-pose-estimation-framework && catkin build
+      - name: Run App
         run: |
-          echo "=== Run ProSLAM ==="
-          sudo docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name test test:1.3.1
+          cd /home/catkin_ws/dataset/00 && . /home/catkin_ws/devel/setup.sh && rosrun srrg_proslam app 00.txt -c "/home/catkin_ws/src/vslam-pose-estimation-framework/configurations/configuration_kitti.yaml"
