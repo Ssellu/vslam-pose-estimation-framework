@@ -165,6 +165,8 @@ protected:
 
   //! @brief total system processing runtime
   double _processing_time_total_seconds = 0;
+  double _processing_min_time = 99999999;
+  double _processing_max_time = 0;
 
   //! @brief frame-wise processing times
   std::vector<double> _processing_times_seconds;
