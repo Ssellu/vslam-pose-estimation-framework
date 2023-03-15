@@ -7,8 +7,6 @@ int32_t main(int32_t argc_, char** argv_)
 {
   EASY_PROFILER_ENABLE;
 
-int32_t main(int32_t argc_, char** argv_) {
-
 #ifdef SRRG_MERGE_DESCRIPTORS
   std::cerr << "main|HBST descriptor merging enabled" << std::endl;
 #endif
