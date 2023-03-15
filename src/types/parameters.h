@@ -167,8 +167,9 @@ public:
   //! @brief parameter printing function
   virtual void print() const;
 
-  //! @brief desired descriptor type (OpenCV string + bit size): BRIEF-256, ORB-256, BRISK-512, FREAK-512, ..
-  std::string descriptor_type = "ORB-256";
+  //! @brief desired descriptor type
+  std::string detector_type = "FAST";
+  std::string descriptor_type = "ORB";
 
   //! @brief dynamic thresholds for feature detection
   real target_number_of_keypoints_tolerance = 0.1;
@@ -219,6 +220,21 @@ public:
 
   //! @brief maximum checked epipolar line offsets
   int32_t maximum_epipolar_search_offset_pixels  = 0;
+  
+  bool use_matches = true;
+  //! @brief desired matching type(FLANNBASED, BRUTEFORCE, BRUTEFORCE_L1,  BRUTEFORCE_HAMMING, BRUTEFORCE_HAMMING_GLUT,  BRUTEFORCE_SL2)
+  std::string matching_type = "FLANNBASED";
+
+  bool matching_disable_findhomography = false;
+  //! @brief desired findhomography_method(RANSAC, RHO, LMEDS)
+  std::string findhomography_method = "RANSAC";
+
+  //! @brief stereo: maximum_confidence
+  real maximum_confidence = 0.99;
+  //! @brief stereo: maximum_ransac_reproject
+  int32_t maximum_ransac_reproject = 1;
+  //! @brief stereo: maximum_iters
+  int32_t maximum_iters = 1000;
 };
 
 //! @class framepoint generation parameters for a rgbd camera setup
