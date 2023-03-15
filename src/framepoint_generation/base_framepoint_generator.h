@@ -1,10 +1,109 @@
 #pragma once
+#include <easy/profiler.h>
 #include "types/frame.h"
 #include "intensity_feature_matcher.h"
 
-
-
 namespace proslam {
+  
+#define USING_EASY_PROFILER
+class Detector{
+public:
+  Detector();
+  ~Detector();
+  virtual double getThreshold()=0;
+  virtual void setThreshold(const double _threshold)=0;
+  virtual void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints)=0;
+};
+
+class FastDetector : public Detector {
+public:
+  FastDetector();
+  FastDetector(double _threshold);
+  ~FastDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  cv::Ptr<cv::FastFeatureDetector> extractor;
+};
+
+class AkazeDetector : public Detector{
+public:
+  AkazeDetector();
+  AkazeDetector(double _threshold);
+  ~AkazeDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  double div_value = 1000000;
+  cv::Ptr<cv::AKAZE> extractor;
+};
+
+class OrbDetector : public Detector{
+  public:
+  OrbDetector();
+  OrbDetector(double _threshold);
+  ~OrbDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  cv::Ptr<cv::ORB> extractor;
+};
+
+class KazeDetector : public Detector{
+  public:
+  KazeDetector();
+  KazeDetector(double _threshold);
+  ~KazeDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  double div_value = 100000;
+  cv::Ptr<cv::KAZE> extractor;
+};
+  
+class SiftDetector : public Detector{
+  public:
+  SiftDetector();
+  SiftDetector(double _threshold);
+  ~SiftDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  double threshold;
+  double div_value = 1;
+  cv::Ptr<cv::xfeatures2d::SIFT> extractor;
+};
+
+class BriskDetector : public Detector{
+  public:
+  BriskDetector();
+  BriskDetector(double _threshold);
+  ~BriskDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  int threshold;
+  cv::Ptr<cv::BRISK> extractor;
+};
+
+class AgastDetector : public Detector{
+  public:
+  AgastDetector();
+  AgastDetector(double _threshold);
+  ~AgastDetector();
+  double getThreshold();
+  void setThreshold(const double _threshold);
+  void detect(const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints);
+protected:
+  int threshold;
+  cv::Ptr<cv::AgastFeatureDetector> extractor;
+};
 
 //! @class this class computes potential framepoints in a stereo image pair by triangulation
 class BaseFramePointGenerator {
@@ -72,7 +171,8 @@ public:
 //ds settings
 protected:
 
-  const Camera* _camera_left = nullptr;
+  // cv::Ptr<cv::Feature2D>** _detectors = nullptr;
+  Detector*** _detectors = nullptr;
 
   //ds image dimensions
   int32_t _number_of_rows_image = 0;
@@ -133,5 +233,22 @@ private:
 };
 
 typedef std::shared_ptr<BaseFramePointGenerator> BaseFramePointGeneratorPtr;
+    
+// class Detector{
+//   Extractor();
+//   ~Extractor();
+
+//   virtual void Extractor::detect(const cv::Mat& image, std::vector<cv::keypoints>& keypoints);
+//   virtual float getThreshold();
+//   virtual void setThreshold();
+// };
+
+
+// Detector** _detectors = nullptr;
+// _detectors = new Detector*[_parameters->number_of_detectors_vertical];
+// _detectors[r] = new Detector*[_parameters->number_of_detectors_horizontal];
+
+// for
+//   _detectors[r][c] = new fastdetector(_parameters->detector_threshold_minimum)
 
 } //namespace proslam
