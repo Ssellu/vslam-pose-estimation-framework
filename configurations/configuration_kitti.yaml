@@ -72,7 +72,7 @@ base_framepoint_generation:
   maximum_projection_tracking_distance_pixels: 50
 
   #ds dynamic thresholds for descriptor tracking
- minimum_descriptor_distance_tracking: 25.6
+  minimum_descriptor_distance_tracking: 25.6
   maximum_descriptor_distance_tracking: 51.2
 
   #rigid stereo sensor configuration
