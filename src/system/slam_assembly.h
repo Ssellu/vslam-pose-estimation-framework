@@ -1,6 +1,7 @@
 #include "qapplication.h"
 #include <thread>
 #include <atomic>
+#include <algorithm>
 
 #include "srrg_messages/message_reader.h"
 #include "srrg_messages/message_timestamp_synchronizer.h"
@@ -64,7 +65,7 @@ public:
                const TransformMatrix3D& camera_left_in_world_guess_ = TransformMatrix3D::Identity());
 
   //ds prints extensive run summary
-  void printReport() const;
+  void printReport();
 
   //! @brief dump trajectory to file (in KITTI benchmark format: 4x4 isometries per line)
   //! @param[in] file_name_ text file path in which the poses are saved to
@@ -165,6 +166,8 @@ protected:
 
   //! @brief total system processing runtime
   double _processing_time_total_seconds = 0;
+
+  std::vector<double> _all_processing_time;
 
   //! @brief frame-wise processing times
   std::vector<double> _processing_times_seconds;
