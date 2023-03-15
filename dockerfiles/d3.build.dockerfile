@@ -22,10 +22,7 @@ FROM test:1.1
 RUN echo "== Clone and Build Source Codes == " && \
     cd /home/catkin_ws/src/vslam-pose-estimation-framework && \
     git pull origin main
-RUN cd /home/catkin_ws/src && git clone https://github.com/yse/easy_profiler.git && cd easy_profiler && mkdir build install && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install .. &&\
-    make -j4 &&\
-    make install
+
 
 RUN echo "== Make ProSlam == " && \
     cd /home/catkin_ws/src/vslam-pose-estimation-framework && ./pull_srrg_packages.bash
