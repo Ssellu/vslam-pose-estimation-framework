@@ -55,9 +55,9 @@ base_framepoint_generation:
   # BRISK: ORB(1), BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
   # SIFT: ORB(x), BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
   # AGAST: ORB, BRIEF, BRISK(x), FREAK(x), AKAZE(x), KAZE(x), SIFT(x)
-  detector_type: FAST
+  detector_type: SIFT
   #ds feature descriptor type (ORB, BRIEF, BRISK, FREAK, AKAZE, KAZE, SIFT)
-  descriptor_type: ORB
+  descriptor_type: BRIEF
 
   #ds dynamic thresholds for feature detection
   target_number_of_keypoints_tolerance: 0.1
