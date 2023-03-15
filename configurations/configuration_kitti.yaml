@@ -13,7 +13,7 @@ command_line:
   dataset_file_name:
 
   #ds options
-  option_use_gui:                   true
+  option_use_gui:                   false
   option_use_odometry:              false
   option_disable_relocalization:    false
   option_show_top_viewer:           false
@@ -48,45 +48,64 @@ world_map:
 
 base_framepoint_generation:
 
-  #ds feature descriptor type (BRIEF-128/256/512, ORB-256, BRISK-512, FREAK-512, A-KAZE-486, BinBoost-064)
-  descriptor_type: ORB-256
+  # FAST: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
+  # ORB: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT
+  # AKAZE: ORB, BRIEF, BRISK(1), FREAK(1), AKAZE(1,L2 not visual), KAZE(L2), SIFT(x)
+  # KAZE: ORB, BRIEF, BRISK(1), FREAK, AKAZE(1), KAZE(x), SIFT(x)
+  # BRISK: ORB(1), BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
+  # SIFT: ORB(x), BRIEF, BRISK(1), FREAK(1), AKAZE(x), KAZE(x), SIFT(x)
+  # AGAST: ORB, BRIEF, BRISK(x), FREAK(x), AKAZE(x), KAZE(x), SIFT(x)
+  detector_type: FAST
+  #ds feature descriptor type (ORB, BRIEF, BRISK, FREAK, AKAZE, KAZE, SIFT)
+  descriptor_type: ORB
 
   #ds dynamic thresholds for feature detection
-  target_number_of_keypoints_tolerance: 0.2
-  detector_threshold_maximum_change:    0.2
-  detector_threshold_minimum:           15
-  detector_threshold_maximum:           30
-  number_of_detectors_vertical:         2
-  number_of_detectors_horizontal:       2
+  target_number_of_keypoints_tolerance: 0.1
+  detector_threshold_maximum_change: 0.1
+  detector_threshold_minimum: 20
+  detector_threshold_maximum: 100
+  number_of_detectors_vertical: 1
+  number_of_detectors_horizontal: 1
 
   #point tracking thresholds
   minimum_projection_tracking_distance_pixels: 15
   maximum_projection_tracking_distance_pixels: 50
 
   #ds dynamic thresholds for descriptor tracking
-  minimum_descriptor_distance_tracking: 30
-  maximum_descriptor_distance_tracking: 85
+ minimum_descriptor_distance_tracking: 25.6
+  maximum_descriptor_distance_tracking: 51.2
 
   #rigid stereo sensor configuration
-  maximum_reliable_depth_meters: 10
-  maximum_depth_meters:          1000
-  minimum_depth_meters:          1
+  maximum_reliable_depth_meters: 15
+  maximum_depth_meters: 1000
+  minimum_depth_meters: 0.1
   
   #feature density regularization
   enable_keypoint_binning: true
-  bin_size_pixels:         20
+  bin_size_pixels:         15
 
 stereo_framepoint_generation:
 
   #ds stereo: triangulation
-  maximum_matching_distance_triangulation: 90
-  minimum_disparity_pixels:                1
-  maximum_epipolar_search_offset_pixels:   0
+  maximum_matching_distance_triangulation: 51.2
+  minimum_disparity_pixels: 1
+  maximum_epipolar_search_offset_pixels: 0
+
+  # stereo : matching
+  use_matches: true
+  # matching type (FLANNBASED, BRUTEFORCE, BRUTEFORCE_L1,  BRUTEFORCE_HAMMING, BRUTEFORCE_HAMMING_GLUT,  BRUTEFORCE_SL2)
+  matching_type: FLANNBASED
+  # Homography or Not
+  matching_disable_findhomography: false
+  findhomography_method: LMEDS
+  maximum_confidence: 0.99
+  maximum_ransac_reproject: 1
+  maximum_iters: 1000
 
 tracking:
 
   #ds this criteria is used for the decision of whether creating a landmark or not from a track of framepoints
-  minimum_track_length_for_landmark_creation: 2
+  minimum_track_length_for_landmark_creation: 1
 
   #ds track lost criteria
   minimum_number_of_landmarks_to_track: 5
@@ -108,7 +127,7 @@ tracking:
   #pose optimization: aligner unit configuration
   aligner->error_delta_for_convergence:  1e-3
   aligner->maximum_error_kernel:         4
-  aligner->damping:                      6
+  aligner->damping:                      5
   aligner->maximum_number_of_iterations: 1000
   aligner->minimum_number_of_inliers:    100
   aligner->minimum_inlier_ratio:         0
