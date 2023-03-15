@@ -3,9 +3,10 @@
 #include "types/frame.h"
 #include "intensity_feature_matcher.h"
 
+#define USING_EASY_PROFILER
+
 namespace proslam {
   
-#define USING_EASY_PROFILER
 class Detector{
 public:
   Detector();
